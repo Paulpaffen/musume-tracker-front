@@ -76,3 +76,12 @@ export interface DashboardStats {
   recentRuns: Run[];
   bestRuns: Run[];
 }
+
+export interface CharacterTraining {
+  id: number;
+  characterName: string;
+  identifierVersion: string;
+  notes?: string;
+  dateCreated: string;
+  userId?: number;
+}
