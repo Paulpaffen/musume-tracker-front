@@ -96,9 +96,14 @@ export default function CharacterDetailsPage() {
     );
   }
 
+  // Helper to safely get track name
+  const getTrackName = (trackType: string) => {
+    return (TRACK_NAMES as Record<string, string>)[trackType] || trackType;
+  };
+
   // Prepare data for charts
   const trackData = stats?.byTrack?.map((track) => ({
-    name: TRACK_NAMES[track.trackType] || track.trackType,
+    name: getTrackName(track.trackType),
     'Score Promedio': Math.round(track.averageScore),
     'Carreras': track.count,
     'Posición Promedio': track.averagePlace.toFixed(1),
@@ -236,7 +241,7 @@ export default function CharacterDetailsPage() {
                   {stats.byTrack?.map((track) => (
                     <tr key={track.trackType} className="border-b border-gray-100 hover:bg-gray-50">
                       <td className="py-3 px-4 font-medium">
-                        {TRACK_NAMES[track.trackType] || track.trackType}
+                        {getTrackName(track.trackType)}
                       </td>
                       <td className="text-center py-3 px-4">{track.count}</td>
                       <td className="text-center py-3 px-4 font-semibold text-primary-600">
