@@ -54,8 +54,20 @@ export const characterAPI = {
 
 // Run API
 export const runAPI = {
-  getAll: (characterTrainingId?: string) =>
-    api.get('/runs', { params: { characterTrainingId } }),
+  getAll: (params?: {
+    characterTrainingId?: string;
+    startDate?: string;
+    endDate?: string;
+    minPlace?: number;
+    maxPlace?: number;
+    minScore?: number;
+    maxScore?: number;
+    rareSkills?: number;
+    normalSkills?: number;
+    rushed?: boolean;
+    goodPositioning?: boolean;
+    uniqueSkillActivated?: boolean;
+  }) => api.get('/runs', { params }),
   getOne: (id: string) => api.get(`/runs/${id}`),
   create: (data: any) => api.post('/runs', data),
   update: (id: string, data: any) => api.patch(`/runs/${id}`, data),
