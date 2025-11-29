@@ -23,6 +23,7 @@ export default function RunsPage() {
 
   // Filter states
   const [selectedCharacter, setSelectedCharacter] = useState('');
+  const [selectedTrackType, setSelectedTrackType] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [minPlace, setMinPlace] = useState('');
@@ -53,6 +54,7 @@ export default function RunsPage() {
     try {
       const params: any = {};
       if (selectedCharacter) params.characterTrainingId = selectedCharacter;
+      if (selectedTrackType) params.trackType = selectedTrackType;
       if (startDate) params.startDate = startDate;
       if (endDate) params.endDate = endDate;
       if (minPlace) params.minPlace = parseInt(minPlace);
@@ -81,6 +83,7 @@ export default function RunsPage() {
 
   const handleClearFilters = () => {
     setSelectedCharacter('');
+    setSelectedTrackType('');
     setStartDate('');
     setEndDate('');
     setMinPlace('');
@@ -147,6 +150,25 @@ export default function RunsPage() {
                 {characters.map(char => (
                   <option key={char.id} value={char.id}>
                     {char.characterName} ({char.identifierVersion})
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Track Type Filter */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Tipo de Pista
+              </label>
+              <select
+                value={selectedTrackType}
+                onChange={(e) => setSelectedTrackType(e.target.value)}
+                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+              >
+                <option value="">Todas</option>
+                {TRACK_TYPES.map(track => (
+                  <option key={track.value} value={track.value}>
+                    {track.label}
                   </option>
                 ))}
               </select>
@@ -366,10 +388,10 @@ export default function RunsPage() {
                   </td>
                   <td className="px-4 py-3 whitespace-nowrap">
                     <span className={`px-2 py-1 text-xs font-medium rounded ${run.finalPlace <= 3
-                        ? 'bg-green-100 text-green-800'
-                        : run.finalPlace <= 6
-                          ? 'bg-blue-100 text-blue-800'
-                          : 'bg-gray-100 text-gray-800'
+                      ? 'bg-green-100 text-green-800'
+                      : run.finalPlace <= 6
+                        ? 'bg-blue-100 text-blue-800'
+                        : 'bg-gray-100 text-gray-800'
                       }`}>
                       #{run.finalPlace}
                     </span>

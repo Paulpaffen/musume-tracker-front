@@ -56,6 +56,7 @@ export const characterAPI = {
 export const runAPI = {
   getAll: (params?: {
     characterTrainingId?: string;
+    trackType?: string;
     startDate?: string;
     endDate?: string;
     minPlace?: number;
