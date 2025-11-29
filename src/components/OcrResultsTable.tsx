@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { fetchCharacterCandidates } from '../lib/fetchCharacterCandidates';
 
 interface OcrResultItem {
     detectedName: string;
@@ -28,9 +29,19 @@ export default function OcrResultsTable({ results, onSave, onCancel }: OcrResult
         setItems(newItems);
     };
 
-    const handleNameChange = (index: number, newName: string) => {
+    const handleNameChange = async (index: number, newName: string) => {
         const newItems = [...items];
         newItems[index].detectedName = newName;
+        // Fetch new candidates from backend
+        try {
+            const candidates = await fetchCharacterCandidates(newName);
+            newItems[index].candidates = candidates;
+            // Optionally reset bestMatchId if no candidates
+            newItems[index].bestMatchId = candidates.length > 0 ? candidates[0].id : null;
+        } catch (err) {
+            newItems[index].candidates = [];
+            newItems[index].bestMatchId = null;
+        }
         setItems(newItems);
     };
 
