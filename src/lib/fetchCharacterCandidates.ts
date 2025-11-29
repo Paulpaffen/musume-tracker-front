@@ -1,4 +1,4 @@
-import api from '../lib/api';
+import { api } from '../lib/api';
 
 export async function fetchCharacterCandidates(detectedName: string) {
   // You may want to pass userId if needed
