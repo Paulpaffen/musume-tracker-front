@@ -18,6 +18,7 @@ export default function Navbar() {
     { href: '/dashboard', label: 'Dashboard' },
     { href: '/characters', label: 'Personajes' },
     { href: '/runs', label: 'Carreras' },
+    { href: '/ocr', label: 'OCR Scan' },
     { href: '/runs/new', label: '+ Nueva Carrera' },
   ];
 
@@ -37,11 +38,10 @@ export default function Navbar() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                    pathname === item.href
-                      ? 'bg-primary-100 text-primary-700'
-                      : 'text-gray-700 hover:bg-gray-100'
-                  }`}
+                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${pathname === item.href
+                    ? 'bg-primary-100 text-primary-700'
+                    : 'text-gray-700 hover:bg-gray-100'
+                    }`}
                 >
                   {item.label}
                 </Link>
