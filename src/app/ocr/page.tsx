@@ -1,12 +1,14 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Navbar from '../../components/Navbar';
 import ImageUpload from '../../components/ImageUpload';
 import OcrResultsTable from '../../components/OcrResultsTable';
-import { api } from '../../lib/api';
+import { api, runAPI } from '../../lib/api';
 
 export default function OcrPage() {
+    const router = useRouter();
     const [isUploading, setIsUploading] = useState(false);
     const [results, setResults] = useState<any[] | null>(null);
 
@@ -35,10 +37,28 @@ export default function OcrPage() {
 
     const handleSave = async (confirmedData: any[]) => {
         try {
-            // TODO: Implement save logic
-            console.log('Saving data:', confirmedData);
+            // Iterate and create runs
+            await Promise.all(confirmedData.map(item => {
+                return runAPI.create({
+                    characterTrainingId: item.bestMatchId,
+                    trackType: item.trackType,
+                    finalPlace: item.finalPlace,
+                    score: item.score,
+                    // Default values for optional fields not captured by OCR
+                    rareSkillsCount: 0,
+                    normalSkillsCount: 0,
+                    uniqueSkillActivated: false,
+                    goodPositioning: false,
+                    rushed: false,
+                });
+            }));
+
+            alert('Runs saved successfully!');
+            setResults(null); // Clear results
+            router.push('/runs'); // Redirect to runs list
         } catch (error) {
             console.error('Save failed:', error);
+            alert('Failed to save some runs. Please check console for details.');
         }
     };
 

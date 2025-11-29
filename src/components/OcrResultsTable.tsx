@@ -12,6 +12,9 @@ interface OcrResultItem {
         identifierVersion: string;
     }>;
     bestMatchId: string | null;
+    // New fields
+    trackType: string;
+    finalPlace: number;
 }
 
 interface OcrResultsTableProps {
@@ -20,8 +23,21 @@ interface OcrResultsTableProps {
     onCancel: () => void;
 }
 
+const TRACK_TYPES = [
+    { value: 'TURF_SHORT', label: 'Césped Corto' },
+    { value: 'TURF_MILE', label: 'Césped Milla' },
+    { value: 'TURF_MEDIUM', label: 'Césped Medio' },
+    { value: 'TURF_LONG', label: 'Césped Largo' },
+    { value: 'DIRT', label: 'Tierra' },
+];
+
 export default function OcrResultsTable({ results, onSave, onCancel }: OcrResultsTableProps) {
-    const [items, setItems] = useState(results);
+    // Initialize items with default values for new fields if not present
+    const [items, setItems] = useState<OcrResultItem[]>(results.map(r => ({
+        ...r,
+        trackType: 'TURF_MEDIUM', // Default
+        finalPlace: 1 // Default
+    })));
 
     const handleMatchChange = (index: number, newMatchId: string) => {
         const newItems = [...items];
@@ -42,6 +58,18 @@ export default function OcrResultsTable({ results, onSave, onCancel }: OcrResult
             newItems[index].candidates = [];
             newItems[index].bestMatchId = null;
         }
+        setItems(newItems);
+    };
+
+    const handleTrackTypeChange = (index: number, newType: string) => {
+        const newItems = [...items];
+        newItems[index].trackType = newType;
+        setItems(newItems);
+    };
+
+    const handleFinalPlaceChange = (index: number, newPlace: number) => {
+        const newItems = [...items];
+        newItems[index].finalPlace = newPlace;
         setItems(newItems);
     };
 
@@ -66,6 +94,8 @@ export default function OcrResultsTable({ results, onSave, onCancel }: OcrResult
                             <th className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900">Detected Name</th>
                             <th className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Score</th>
                             <th className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Assigned Character</th>
+                            <th className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Track</th>
+                            <th className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Place</th>
                             <th className="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">Actions</th>
                         </tr>
                     </thead>
@@ -99,6 +129,29 @@ export default function OcrResultsTable({ results, onSave, onCancel }: OcrResult
                                     {item.candidates.length === 0 && (
                                         <span className="text-xs text-red-500 ml-2">No match found</span>
                                     )}
+                                </td>
+                                <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                    <select
+                                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                                        value={item.trackType}
+                                        onChange={(e) => handleTrackTypeChange(index, e.target.value)}
+                                    >
+                                        {TRACK_TYPES.map(type => (
+                                            <option key={type.value} value={type.value}>
+                                                {type.label}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </td>
+                                <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                    <input
+                                        type="number"
+                                        min="1"
+                                        max="18"
+                                        value={item.finalPlace}
+                                        onChange={e => handleFinalPlaceChange(index, parseInt(e.target.value))}
+                                        className="block w-20 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                                    />
                                 </td>
                                 <td className="whitespace-nowrap px-3 py-4 text-right text-sm font-medium">
                                     <button
