@@ -12,6 +12,10 @@ interface OcrResultItem {
         identifierVersion: string;
     }>;
     bestMatchId: string | null;
+    defaults?: {
+        trackType: string;
+        finalPlace: number;
+    };
     // New fields
     trackType: string;
     finalPlace: number;
@@ -35,8 +39,8 @@ export default function OcrResultsTable({ results, onSave, onCancel }: OcrResult
     // Initialize items with default values for new fields if not present
     const [items, setItems] = useState<OcrResultItem[]>(results.map(r => ({
         ...r,
-        trackType: 'TURF_MEDIUM', // Default
-        finalPlace: 1 // Default
+        trackType: r.defaults?.trackType || 'TURF_MEDIUM',
+        finalPlace: r.defaults?.finalPlace || 1
     })));
 
     const handleMatchChange = (index: number, newMatchId: string) => {
@@ -45,20 +49,33 @@ export default function OcrResultsTable({ results, onSave, onCancel }: OcrResult
         setItems(newItems);
     };
 
-    const handleNameChange = async (index: number, newName: string) => {
+    const handleNameChange = (index: number, newName: string) => {
         const newItems = [...items];
         newItems[index].detectedName = newName;
-        // Fetch new candidates from backend
-        try {
-            const candidates = await fetchCharacterCandidates(newName);
-            newItems[index].candidates = candidates;
-            // Optionally reset bestMatchId if no candidates
-            newItems[index].bestMatchId = candidates.length > 0 ? candidates[0].id : null;
-        } catch (err) {
-            newItems[index].candidates = [];
-            newItems[index].bestMatchId = null;
-        }
         setItems(newItems);
+
+        // Debounce or just fire and forget update for candidates
+        // We use a timeout to avoid spamming the API on every keystroke
+        if ((handleNameChange as any).timeout) clearTimeout((handleNameChange as any).timeout);
+
+        (handleNameChange as any).timeout = setTimeout(async () => {
+            try {
+                const candidates = await fetchCharacterCandidates(newName);
+                setItems(prevItems => {
+                    const updated = [...prevItems];
+                    // Check if the row still exists and matches (simple check)
+                    if (updated[index]) {
+                        updated[index].candidates = candidates;
+                        // Only auto-select if we don't have a match or the current match is invalid
+                        // But for now, let's just update candidates to avoid disrupting user selection
+                        // updated[index].bestMatchId = candidates.length > 0 ? candidates[0].id : null;
+                    }
+                    return updated;
+                });
+            } catch (err) {
+                console.error("Error fetching candidates", err);
+            }
+        }, 500);
     };
 
     const handleTrackTypeChange = (index: number, newType: string) => {
