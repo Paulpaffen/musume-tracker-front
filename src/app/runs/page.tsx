@@ -124,6 +124,52 @@ export default function RunsPage() {
         </Link>
       </div>
 
+      {/* Pending Runs Banner */}
+      {runs.filter(run =>
+        run.rareSkillsCount === 0 &&
+        run.normalSkillsCount === 0 &&
+        run.uniqueSkillActivated === false &&
+        run.goodPositioning === false &&
+        run.rushed === false
+      ).length > 0 && (
+          <Link href="/runs/pending" className="block mb-6">
+            <div className="bg-gradient-to-r from-yellow-50 to-orange-50 border-l-4 border-yellow-400 p-4 hover:shadow-md transition-shadow cursor-pointer rounded-lg">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <span className="text-3xl">⚠️</span>
+                  <div>
+                    <p className="font-semibold text-gray-900">
+                      Tienes {runs.filter(run =>
+                        run.rareSkillsCount === 0 &&
+                        run.normalSkillsCount === 0 &&
+                        run.uniqueSkillActivated === false &&
+                        run.goodPositioning === false &&
+                        run.rushed === false
+                      ).length} carrera{runs.filter(run =>
+                        run.rareSkillsCount === 0 &&
+                        run.normalSkillsCount === 0 &&
+                        run.uniqueSkillActivated === false &&
+                        run.goodPositioning === false &&
+                        run.rushed === false
+                      ).length !== 1 ? 's' : ''} pendiente{runs.filter(run =>
+                        run.rareSkillsCount === 0 &&
+                        run.normalSkillsCount === 0 &&
+                        run.uniqueSkillActivated === false &&
+                        run.goodPositioning === false &&
+                        run.rushed === false
+                      ).length !== 1 ? 's' : ''}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      Haz clic aquí para completar los detalles
+                    </p>
+                  </div>
+                </div>
+                <span className="text-gray-400">→</span>
+              </div>
+            </div>
+          </Link>
+        )}
+
       {/* Filters */}
       <div className="bg-white shadow sm:rounded-lg p-4 mb-6">
         <button

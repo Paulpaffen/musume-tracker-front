@@ -19,6 +19,7 @@ export default function Navbar() {
     { href: '/characters', label: 'Personajes' },
     { href: '/characters/compare', label: 'Comparar' },
     { href: '/runs', label: 'Carreras' },
+    { href: '/runs/pending', label: 'Pendientes' },
     { href: '/ocr', label: 'OCR Scan' },
     { href: '/runs/new', label: '+ Nueva Carrera' },
   ];
