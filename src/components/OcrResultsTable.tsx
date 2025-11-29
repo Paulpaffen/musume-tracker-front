@@ -28,6 +28,12 @@ export default function OcrResultsTable({ results, onSave, onCancel }: OcrResult
         setItems(newItems);
     };
 
+    const handleNameChange = (index: number, newName: string) => {
+        const newItems = [...items];
+        newItems[index].detectedName = newName;
+        setItems(newItems);
+    };
+
     const handleRemoveRow = (index: number) => {
         const newItems = items.filter((_, i) => i !== index);
         setItems(newItems);
@@ -56,7 +62,12 @@ export default function OcrResultsTable({ results, onSave, onCancel }: OcrResult
                         {items.map((item, index) => (
                             <tr key={index}>
                                 <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900">
-                                    {item.detectedName}
+                                    <input
+                                        type="text"
+                                        value={item.detectedName}
+                                        onChange={e => handleNameChange(index, e.target.value)}
+                                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                                    />
                                 </td>
                                 <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                                     {item.score.toLocaleString()}
