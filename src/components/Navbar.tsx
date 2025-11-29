@@ -17,6 +17,7 @@ export default function Navbar() {
   const navItems = [
     { href: '/dashboard', label: 'Dashboard' },
     { href: '/characters', label: 'Personajes' },
+    { href: '/characters/compare', label: 'Comparar' },
     { href: '/runs', label: 'Carreras' },
     { href: '/ocr', label: 'OCR Scan' },
     { href: '/runs/new', label: '+ Nueva Carrera' },

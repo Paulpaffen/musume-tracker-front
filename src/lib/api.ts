@@ -44,7 +44,8 @@ export const authAPI = {
 
 // Character API
 export const characterAPI = {
-  getAll: () => api.get('/characters'),
+  getAll: (params?: { name?: string; minRuns?: string; maxRuns?: string }) =>
+    api.get('/characters', { params }),
   getOne: (id: string) => api.get(`/characters/${id}`),
   create: (data: any) => api.post('/characters', data),
   update: (id: string, data: any) => api.patch(`/characters/${id}`, data),

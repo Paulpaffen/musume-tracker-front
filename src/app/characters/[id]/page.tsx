@@ -34,6 +34,8 @@ interface CharacterStats {
   uniqueSkillRate: number;
   rushedRate: number;
   goodPositioningRate: number;
+  averageRareSkills: number;
+  averageNormalSkills: number;
 }
 
 const COLORS = ['#ec4899', '#8b5cf6', '#3b82f6', '#10b981', '#f59e0b'];
@@ -270,7 +272,7 @@ export default function CharacterDetailsPage() {
             <h2 className="text-xl font-bold text-gray-900 mb-4">
               Indicadores de Rendimiento
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
               <div className="p-4 bg-pink-50 rounded-lg">
                 <h3 className="text-sm font-medium text-gray-700 mb-2">
                   Tasa de Activación de Skill Única
@@ -307,6 +309,26 @@ export default function CharacterDetailsPage() {
                   </p>
                   <p className="text-sm text-gray-500 mb-1">
                     de {stats.totalRuns} carreras
+                  </p>
+                </div>
+              </div>
+              <div className="p-4 bg-yellow-50 rounded-lg">
+                <h3 className="text-sm font-medium text-gray-700 mb-2">
+                  Promedio Skills Raras
+                </h3>
+                <div className="flex items-end gap-2">
+                  <p className="text-3xl font-bold text-yellow-600">
+                    {stats.averageRareSkills}
+                  </p>
+                </div>
+              </div>
+              <div className="p-4 bg-green-50 rounded-lg">
+                <h3 className="text-sm font-medium text-gray-700 mb-2">
+                  Promedio Skills Normales
+                </h3>
+                <div className="flex items-end gap-2">
+                  <p className="text-3xl font-bold text-green-600">
+                    {stats.averageNormalSkills}
                   </p>
                 </div>
               </div>
