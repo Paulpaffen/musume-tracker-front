@@ -47,7 +47,7 @@ export const authAPI = {
 
 // Character API
 export const characterAPI = {
-  getAll: () => api.get('/characters'),
+  getAll: (params?: any) => api.get('/characters', { params }),
   getOne: (id: string) => api.get(`/characters/${id}`),
   create: (data: any) => api.post('/characters', data),
   update: (id: string, data: any) => api.patch(`/characters/${id}`, data),
@@ -84,6 +84,3 @@ export const friendsAPI = {
   accept: (id: string) => api.patch(`/friends/${id}/accept`),
   remove: (id: string) => api.delete(`/friends/${id}`),
 };
-
-//hola
-
