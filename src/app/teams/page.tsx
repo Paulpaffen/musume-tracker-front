@@ -62,7 +62,7 @@ export default function TeamRecommendationsPage() {
             <div className="flex justify-center items-center min-h-screen">
                 <div className="text-center">
                     <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-purple-600 mx-auto mb-4"></div>
-                    <p className="text-gray-600 text-lg">Analizando tus mejores equipos...</p>
+                    <p className="text-gray-600 dark:text-gray-300 text-lg">Analizando tus mejores equipos...</p>
                 </div>
             </div>
         );
@@ -73,9 +73,21 @@ export default function TeamRecommendationsPage() {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-purple-900/20 dark:to-pink-900/20 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-8">
-            <div className="max-w-7xl mx-auto">
+            <div className="max-w-7xl mx-auto relative">
+                {/* Back Button */}
+                <div className="absolute left-0 top-0 hidden md:block">
+                    <Link href="/dashboard" className="btn btn-secondary flex items-center gap-2 text-sm">
+                        ← Volver al Dashboard
+                    </Link>
+                </div>
+                <div className="md:hidden mb-6">
+                    <Link href="/dashboard" className="btn btn-secondary w-full flex justify-center items-center gap-2 text-sm">
+                        ← Volver al Dashboard
+                    </Link>
+                </div>
+
                 {/* Header */}
-                <div className="text-center mb-12">
+                <div className="text-center mb-12 pt-8 md:pt-0">
                     <h1 className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 mb-4">
                         ⭐ Equipos Recomendados ⭐
                     </h1>

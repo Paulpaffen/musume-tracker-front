@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Navbar from '../../components/Navbar';
 import ImageUpload from '../../components/ImageUpload';
 import OcrResultsTable from '../../components/OcrResultsTable';
 import { api, runAPI } from '../../lib/api';
@@ -66,11 +65,10 @@ export default function OcrPage() {
 
     return (
         <div className="min-h-full">
-            <Navbar />
             <div className="py-10">
                 <header>
                     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                        <h1 className="text-3xl font-bold leading-tight tracking-tight text-gray-900">
+                        <h1 className="text-3xl font-bold leading-tight tracking-tight text-gray-900 dark:text-white">
                             OCR Scanner
                         </h1>
                     </div>
@@ -80,8 +78,8 @@ export default function OcrPage() {
                         {!results ? (
                             <div className="max-w-xl mx-auto">
                                 <ImageUpload onUpload={handleUpload} isUploading={isUploading} />
-                                <p className="mt-4 text-sm text-gray-500 text-center">
-                                    Upload screenshots of your Team Race results.
+                                <p className="mt-4 text-sm text-gray-500 dark:text-gray-400 text-center">
+                                    Sube capturas de pantalla de tus resultados de Team Race.
                                 </p>
                             </div>
                         ) : (
