@@ -74,6 +74,10 @@ export const statsAPI = {
 export const profileAPI = {
   getMe: () => api.get('/profile/me'),
   updateSettings: (data: any) => api.patch('/profile/settings', data),
+  getPublicProfile: (friendCode: string) => api.get(`/profile/user/${friendCode}`),
+  getUserStats: (friendCode: string) => api.get(`/profile/user/${friendCode}/stats`),
+  getUserCharacters: (friendCode: string) => api.get(`/profile/user/${friendCode}/characters`),
+  getUserBestRuns: (friendCode: string) => api.get(`/profile/user/${friendCode}/best-runs`),
 };
 
 // Friends API
