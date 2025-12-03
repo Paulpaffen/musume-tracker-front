@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { profileAPI } from '@/lib/api';
 import { TRACK_NAMES } from '@/lib/constants';
+import { TrackType } from '@/lib/types';
 import { format } from 'date-fns';
 import toast from 'react-hot-toast';
 
@@ -218,7 +219,7 @@ export default function FriendProfilePage() {
                       {run.characterTraining?.characterName} - {run.characterTraining?.identifierVersion}
                     </p>
                     <p className="text-sm text-gray-600">
-                      {TRACK_NAMES[run.trackType]} • Posición {run.finalPlace}
+                      {TRACK_NAMES[run.trackType as TrackType]} • Posición {run.finalPlace}
                     </p>
                   </div>
                 </div>
