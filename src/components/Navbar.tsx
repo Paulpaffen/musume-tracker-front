@@ -18,6 +18,7 @@ export default function Navbar() {
     { href: '/dashboard', label: 'Dashboard' },
     { href: '/characters', label: 'Personajes' },
     { href: '/characters/compare', label: 'Comparar' },
+    { href: '/teams', label: '⭐ Equipos' },
     { href: '/runs', label: 'Carreras' },
     { href: '/runs/pending', label: 'Pendientes' },
     { href: '/ocr', label: 'OCR Scan' },
