@@ -24,11 +24,9 @@ export default function PendingRunsPage() {
 
     const loadPendingRuns = async () => {
         try {
-            // Fetch all runs and filter for "pending" ones (default values)
             const response = await runAPI.getAll();
             const runs = response.data;
 
-            // Filter runs that have default values (considered "pending")
             const pending = runs.filter((run: Run) =>
                 run.rareSkillsCount === 0 &&
                 run.normalSkillsCount === 0 &&
@@ -39,7 +37,6 @@ export default function PendingRunsPage() {
 
             setPendingRuns(pending);
 
-            // Initialize editing states
             const initialStates: any = {};
             pending.forEach((run: Run) => {
                 initialStates[run.id] = {
@@ -91,7 +88,6 @@ export default function PendingRunsPage() {
     const handleSave = async (runId: string) => {
         try {
             await runAPI.update(runId, editingStates[runId]);
-            // Remove from pending list
             setPendingRuns(prev => prev.filter(run => run.id !== runId));
             alert('Carrera actualizada exitosamente');
         } catch (error) {
@@ -103,6 +99,16 @@ export default function PendingRunsPage() {
     if (loading) {
         return <div className="text-center py-12">Cargando carreras pendientes...</div>;
     }
+
+    // Group runs by track type
+    const trackOrder = ['TURF_SHORT', 'TURF_MILE', 'TURF_MEDIUM', 'TURF_LONG', 'DIRT'];
+    const groupedRuns = pendingRuns.reduce((acc, run) => {
+        if (!acc[run.trackType]) {
+            acc[run.trackType] = [];
+        }
+        acc[run.trackType].push(run);
+        return acc;
+    }, {} as Record<string, Run[]>);
 
     return (
         <div>
@@ -133,151 +139,170 @@ export default function PendingRunsPage() {
                 </div>
             ) : (
                 <>
-                    <div className="mb-4 bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <div className="mb-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
                         <p className="text-sm text-blue-800">
-                            <strong>{pendingRuns.length}</strong> carrera{pendingRuns.length !== 1 ? 's' : ''} pendiente{pendingRuns.length !== 1 ? 's' : ''} de completar
+                            <strong>{pendingRuns.length}</strong> carrera{pendingRuns.length !== 1 ? 's' : ''} pendiente{pendingRuns.length !== 1 ? 's' : ''} de completar • Organizadas por tipo de pista
                         </p>
                     </div>
 
-                    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                        {pendingRuns.map((run) => (
-                            <div key={run.id} className="card hover:shadow-lg transition-shadow">
-                                {/* Run Info Header */}
-                                <div className="border-b border-gray-200 pb-4 mb-4">
-                                    <div className="flex justify-between items-start mb-2">
-                                        <div>
-                                            <h3 className="text-lg font-bold text-gray-900">
-                                                {run.characterTraining?.characterName}
-                                            </h3>
-                                            <p className="text-sm text-gray-600">
-                                                {run.characterTraining?.identifierVersion}
-                                            </p>
-                                        </div>
-                                        <span className={`px-2 py-1 text-xs font-medium rounded ${run.finalPlace <= 3
-                                                ? 'bg-green-100 text-green-800'
-                                                : run.finalPlace <= 6
-                                                    ? 'bg-blue-100 text-blue-800'
-                                                    : 'bg-gray-100 text-gray-800'
-                                            }`}>
-                                            #{run.finalPlace}
-                                        </span>
-                                    </div>
+                    {/* Render each track type group */}
+                    {trackOrder.map(trackType => {
+                        const runsInTrack = groupedRuns[trackType];
+                        if (!runsInTrack || runsInTrack.length === 0) return null;
 
-                                    <div className="grid grid-cols-2 gap-2 text-sm">
-                                        <div>
-                                            <span className="text-gray-500">Pista:</span>
-                                            <span className="ml-1 font-medium">{TRACK_NAMES[run.trackType]}</span>
-                                        </div>
-                                        <div>
-                                            <span className="text-gray-500">Score:</span>
-                                            <span className="ml-1 font-bold text-primary-600">{run.score}</span>
-                                        </div>
-                                        <div className="col-span-2">
-                                            <span className="text-gray-500">Fecha:</span>
-                                            <span className="ml-1">{format(new Date(run.date), 'dd/MM/yyyy')}</span>
-                                        </div>
-                                    </div>
+                        return (
+                            <div key={trackType} className="mb-10">
+                                {/* Track Type Header */}
+                                <div className="flex items-center gap-3 mb-4">
+                                    <div className="flex-1 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
+                                    <h2 className="text-xl font-bold text-gray-900 px-6 py-2 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border-2 border-gray-200 shadow-sm">
+                                        🏁 {TRACK_NAMES[trackType as keyof typeof TRACK_NAMES]}
+                                        <span className="ml-2 text-sm font-normal text-gray-600">
+                                            ({runsInTrack.length})
+                                        </span>
+                                    </h2>
+                                    <div className="flex-1 h-px bg-gradient-to-r from-gray-300 via-transparent to-transparent"></div>
                                 </div>
 
-                                {/* Editable Fields */}
-                                <div className="space-y-4">
-                                    {/* Skills Counters */}
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                                            Skills Raras
-                                        </label>
-                                        <div className="flex items-center gap-3">
-                                            <button
-                                                onClick={() => handleDecrement(run.id, 'rareSkillsCount')}
-                                                className="w-10 h-10 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-xl flex items-center justify-center"
-                                            >
-                                                −
-                                            </button>
-                                            <span className="text-2xl font-bold text-purple-600 w-12 text-center">
-                                                {editingStates[run.id]?.rareSkillsCount || 0}
-                                            </span>
-                                            <button
-                                                onClick={() => handleIncrement(run.id, 'rareSkillsCount')}
-                                                className="w-10 h-10 rounded-lg bg-purple-100 hover:bg-purple-200 text-purple-700 font-bold text-xl flex items-center justify-center"
-                                            >
-                                                +
-                                            </button>
+                                {/* Cards Grid for this track type */}
+                                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                                    {runsInTrack.map((run) => (
+                                        <div key={run.id} className="card hover:shadow-lg transition-shadow">
+                                            {/* Run Info Header */}
+                                            <div className="border-b border-gray-200 pb-4 mb-4">
+                                                <div className="flex justify-between items-start mb-2">
+                                                    <div>
+                                                        <h3 className="text-lg font-bold text-gray-900">
+                                                            {run.characterTraining?.characterName}
+                                                        </h3>
+                                                        <p className="text-sm text-gray-600">
+                                                            {run.characterTraining?.identifierVersion}
+                                                        </p>
+                                                    </div>
+                                                    <span className={`px-2 py-1 text-xs font-medium rounded ${run.finalPlace <= 3
+                                                            ? 'bg-green-100 text-green-800'
+                                                            : run.finalPlace <= 6
+                                                                ? 'bg-blue-100 text-blue-800'
+                                                                : 'bg-gray-100 text-gray-800'
+                                                        }`}>
+                                                        #{run.finalPlace}
+                                                    </span>
+                                                </div>
+
+                                                <div className="grid grid-cols-2 gap-2 text-sm">
+                                                    <div>
+                                                        <span className="text-gray-500">Score:</span>
+                                                        <span className="ml-1 font-bold text-primary-600">{run.score}</span>
+                                                    </div>
+                                                    <div>
+                                                        <span className="text-gray-500">Fecha:</span>
+                                                        <span className="ml-1">{format(new Date(run.date), 'dd/MM/yyyy')}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* Editable Fields */}
+                                            <div className="space-y-4">
+                                                {/* Skills Counters */}
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                                        Skills Raras
+                                                    </label>
+                                                    <div className="flex items-center gap-3">
+                                                        <button
+                                                            onClick={() => handleDecrement(run.id, 'rareSkillsCount')}
+                                                            className="w-10 h-10 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-xl flex items-center justify-center"
+                                                        >
+                                                            −
+                                                        </button>
+                                                        <span className="text-2xl font-bold text-purple-600 w-12 text-center">
+                                                            {editingStates[run.id]?.rareSkillsCount || 0}
+                                                        </span>
+                                                        <button
+                                                            onClick={() => handleIncrement(run.id, 'rareSkillsCount')}
+                                                            className="w-10 h-10 rounded-lg bg-purple-100 hover:bg-purple-200 text-purple-700 font-bold text-xl flex items-center justify-center"
+                                                        >
+                                                            +
+                                                        </button>
+                                                    </div>
+                                                </div>
+
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                                        Skills Normales
+                                                    </label>
+                                                    <div className="flex items-center gap-3">
+                                                        <button
+                                                            onClick={() => handleDecrement(run.id, 'normalSkillsCount')}
+                                                            className="w-10 h-10 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-xl flex items-center justify-center"
+                                                        >
+                                                            −
+                                                        </button>
+                                                        <span className="text-2xl font-bold text-blue-600 w-12 text-center">
+                                                            {editingStates[run.id]?.normalSkillsCount || 0}
+                                                        </span>
+                                                        <button
+                                                            onClick={() => handleIncrement(run.id, 'normalSkillsCount')}
+                                                            className="w-10 h-10 rounded-lg bg-blue-100 hover:bg-blue-200 text-blue-700 font-bold text-xl flex items-center justify-center"
+                                                        >
+                                                            +
+                                                        </button>
+                                                    </div>
+                                                </div>
+
+                                                {/* Checkboxes */}
+                                                <div className="space-y-2">
+                                                    <label className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded">
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={editingStates[run.id]?.uniqueSkillActivated || false}
+                                                            onChange={() => handleToggle(run.id, 'uniqueSkillActivated')}
+                                                            className="rounded border-gray-300 text-yellow-600 focus:ring-yellow-500"
+                                                        />
+                                                        <span className="text-sm font-medium text-gray-700">
+                                                            Skill Única Activada
+                                                        </span>
+                                                    </label>
+
+                                                    <label className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded">
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={editingStates[run.id]?.goodPositioning || false}
+                                                            onChange={() => handleToggle(run.id, 'goodPositioning')}
+                                                            className="rounded border-gray-300 text-green-600 focus:ring-green-500"
+                                                        />
+                                                        <span className="text-sm font-medium text-gray-700">
+                                                            Good Positioning
+                                                        </span>
+                                                    </label>
+
+                                                    <label className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded">
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={editingStates[run.id]?.rushed || false}
+                                                            onChange={() => handleToggle(run.id, 'rushed')}
+                                                            className="rounded border-gray-300 text-red-600 focus:ring-red-500"
+                                                        />
+                                                        <span className="text-sm font-medium text-gray-700">
+                                                            Rushed
+                                                        </span>
+                                                    </label>
+                                                </div>
+
+                                                {/* Save Button */}
+                                                <button
+                                                    onClick={() => handleSave(run.id)}
+                                                    className="w-full btn btn-primary mt-4"
+                                                >
+                                                    💾 Guardar
+                                                </button>
+                                            </div>
                                         </div>
-                                    </div>
-
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                                            Skills Normales
-                                        </label>
-                                        <div className="flex items-center gap-3">
-                                            <button
-                                                onClick={() => handleDecrement(run.id, 'normalSkillsCount')}
-                                                className="w-10 h-10 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-xl flex items-center justify-center"
-                                            >
-                                                −
-                                            </button>
-                                            <span className="text-2xl font-bold text-blue-600 w-12 text-center">
-                                                {editingStates[run.id]?.normalSkillsCount || 0}
-                                            </span>
-                                            <button
-                                                onClick={() => handleIncrement(run.id, 'normalSkillsCount')}
-                                                className="w-10 h-10 rounded-lg bg-blue-100 hover:bg-blue-200 text-blue-700 font-bold text-xl flex items-center justify-center"
-                                            >
-                                                +
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                    {/* Checkboxes */}
-                                    <div className="space-y-2">
-                                        <label className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded">
-                                            <input
-                                                type="checkbox"
-                                                checked={editingStates[run.id]?.uniqueSkillActivated || false}
-                                                onChange={() => handleToggle(run.id, 'uniqueSkillActivated')}
-                                                className="rounded border-gray-300 text-yellow-600 focus:ring-yellow-500"
-                                            />
-                                            <span className="text-sm font-medium text-gray-700">
-                                                Skill Única Activada
-                                            </span>
-                                        </label>
-
-                                        <label className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded">
-                                            <input
-                                                type="checkbox"
-                                                checked={editingStates[run.id]?.goodPositioning || false}
-                                                onChange={() => handleToggle(run.id, 'goodPositioning')}
-                                                className="rounded border-gray-300 text-green-600 focus:ring-green-500"
-                                            />
-                                            <span className="text-sm font-medium text-gray-700">
-                                                Good Positioning
-                                            </span>
-                                        </label>
-
-                                        <label className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded">
-                                            <input
-                                                type="checkbox"
-                                                checked={editingStates[run.id]?.rushed || false}
-                                                onChange={() => handleToggle(run.id, 'rushed')}
-                                                className="rounded border-gray-300 text-red-600 focus:ring-red-500"
-                                            />
-                                            <span className="text-sm font-medium text-gray-700">
-                                                Rushed
-                                            </span>
-                                        </label>
-                                    </div>
-
-                                    {/* Save Button */}
-                                    <button
-                                        onClick={() => handleSave(run.id)}
-                                        className="w-full btn btn-primary mt-4"
-                                    >
-                                        💾 Guardar
-                                    </button>
+                                    ))}
                                 </div>
                             </div>
-                        ))}
-                    </div>
+                        );
+                    })}
                 </>
             )}
         </div>
