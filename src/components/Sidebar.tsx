@@ -36,6 +36,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
         { href: '/runs/pending', label: 'Pendientes', icon: '⏳' },
         { href: '/ocr', label: 'OCR Scan', icon: '📷' },
         { href: '/runs/new', label: 'Nueva Carrera', icon: '➕' },
+        { href: '/friends/test', label: '🧪 Test Friends', icon: '🔬' },
     ];
 
     return (

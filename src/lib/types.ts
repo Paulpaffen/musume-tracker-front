@@ -4,6 +4,31 @@ export interface User {
   createdAt: string;
 }
 
+export interface ProfileSettings {
+  showStats: boolean;
+  showCharacters: boolean;
+  showBestRuns: boolean;
+  showRecentActivity: boolean;
+}
+
+export interface FriendSummary {
+  id: string;
+  username: string;
+  displayName?: string | null;
+  friendCode?: string | null;
+}
+
+export type FriendRequestStatus = 'PENDING' | 'ACCEPTED' | 'BLOCKED';
+
+export interface FriendRequest {
+  id: string;
+  userId: string;
+  friendId: string;
+  status: FriendRequestStatus;
+  createdAt: string;
+  acceptedAt?: string | null;
+}
+
 export interface Character {
   id: string;
   characterName: string;
