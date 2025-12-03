@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { api } from '@/lib/api';
 import { TRACK_NAMES } from '@/lib/constants';
 
+export const dynamic = 'force-dynamic';
+
 interface TeamMember {
     id: string;
     characterName: string;

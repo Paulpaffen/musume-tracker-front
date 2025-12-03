@@ -7,6 +7,8 @@ import ImageUpload from '../../components/ImageUpload';
 import OcrResultsTable from '../../components/OcrResultsTable';
 import { api, runAPI } from '../../lib/api';
 
+export const dynamic = 'force-dynamic';
+
 export default function OcrPage() {
     const router = useRouter();
     const [isUploading, setIsUploading] = useState(false);

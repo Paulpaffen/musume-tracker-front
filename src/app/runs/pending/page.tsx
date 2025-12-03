@@ -7,6 +7,8 @@ import { Run } from '@/lib/types';
 import { TRACK_NAMES } from '@/lib/constants';
 import { format } from 'date-fns';
 
+export const dynamic = 'force-dynamic';
+
 export default function PendingRunsPage() {
     const [pendingRuns, setPendingRuns] = useState<Run[]>([]);
     const [loading, setLoading] = useState(true);
@@ -180,10 +182,10 @@ export default function PendingRunsPage() {
                                                         </p>
                                                     </div>
                                                     <span className={`px-2 py-1 text-xs font-medium rounded ${run.finalPlace <= 3
-                                                            ? 'bg-green-100 text-green-800'
-                                                            : run.finalPlace <= 6
-                                                                ? 'bg-blue-100 text-blue-800'
-                                                                : 'bg-gray-100 text-gray-800'
+                                                        ? 'bg-green-100 text-green-800'
+                                                        : run.finalPlace <= 6
+                                                            ? 'bg-blue-100 text-blue-800'
+                                                            : 'bg-gray-100 text-gray-800'
                                                         }`}>
                                                         #{run.finalPlace}
                                                     </span>
