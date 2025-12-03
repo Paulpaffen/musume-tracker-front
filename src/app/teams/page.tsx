@@ -72,7 +72,7 @@ export default function TeamRecommendationsPage() {
     const currentTeam = recommendations[selectedTrack] || [];
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-purple-900/20 dark:to-pink-900/20 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-8">
+        <div className="min-h-screen">
             <div className="max-w-7xl mx-auto relative">
                 {/* Back Button */}
                 <div className="absolute left-0 top-0 hidden md:block">
