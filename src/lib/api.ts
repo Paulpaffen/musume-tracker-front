@@ -4,6 +4,9 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
 export const api = axios.create({
   baseURL: API_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
 });
 
 // Request interceptor to add token
@@ -44,8 +47,7 @@ export const authAPI = {
 
 // Character API
 export const characterAPI = {
-  getAll: (params?: { name?: string; minRuns?: string; maxRuns?: string }) =>
-    api.get('/characters', { params }),
+  getAll: () => api.get('/characters'),
   getOne: (id: string) => api.get(`/characters/${id}`),
   create: (data: any) => api.post('/characters', data),
   update: (id: string, data: any) => api.patch(`/characters/${id}`, data),
@@ -54,21 +56,8 @@ export const characterAPI = {
 
 // Run API
 export const runAPI = {
-  getAll: (params?: {
-    characterTrainingId?: string;
-    trackType?: string;
-    startDate?: string;
-    endDate?: string;
-    minPlace?: number;
-    maxPlace?: number;
-    minScore?: number;
-    maxScore?: number;
-    rareSkills?: number;
-    normalSkills?: number;
-    rushed?: boolean;
-    goodPositioning?: boolean;
-    uniqueSkillActivated?: boolean;
-  }) => api.get('/runs', { params }),
+  getAll: (characterTrainingId?: string) =>
+    api.get('/runs', { params: { characterTrainingId } }),
   getOne: (id: string) => api.get(`/runs/${id}`),
   create: (data: any) => api.post('/runs', data),
   update: (id: string, data: any) => api.patch(`/runs/${id}`, data),
@@ -80,3 +69,21 @@ export const statsAPI = {
   getDashboard: () => api.get('/stats/dashboard'),
   getCharacter: (id: string) => api.get(`/stats/character/${id}`),
 };
+
+// Profile API
+export const profileAPI = {
+  getMe: () => api.get('/profile/me'),
+  updateSettings: (data: any) => api.patch('/profile/settings', data),
+};
+
+// Friends API
+export const friendsAPI = {
+  list: () => api.get('/friends'),
+  listRequests: () => api.get('/friends/requests'),
+  addByCode: (friendCode: string) => api.post('/friends/add', { friendCode }),
+  accept: (id: string) => api.patch(`/friends/${id}/accept`),
+  remove: (id: string) => api.delete(`/friends/${id}`),
+};
+
+//hola
+
