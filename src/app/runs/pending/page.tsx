@@ -6,6 +6,7 @@ import { runAPI } from '@/lib/api';
 import { Run } from '@/lib/types';
 import { TRACK_NAMES } from '@/lib/constants';
 import { format } from 'date-fns';
+import toast from 'react-hot-toast';
 
 export const dynamic = 'force-dynamic';
 
@@ -91,10 +92,16 @@ export default function PendingRunsPage() {
         try {
             await runAPI.update(runId, editingStates[runId]);
             setPendingRuns(prev => prev.filter(run => run.id !== runId));
-            alert('Carrera actualizada exitosamente');
+            toast.success('Guardado correctamente', {
+                duration: 3000,
+                position: 'bottom-left',
+            });
         } catch (error) {
             console.error('Error updating run:', error);
-            alert('Error al actualizar la carrera');
+            toast.error('Error al guardar la carrera', {
+                duration: 3000,
+                position: 'bottom-left',
+            });
         }
     };
 
