@@ -118,7 +118,7 @@ export default function RunsPage() {
   return (
     <div>
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Mis Carreras</h1>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Mis Carreras</h1>
         <Link href="/runs/new" className="btn btn-primary">
           + Nueva Carrera
         </Link>
@@ -133,12 +133,12 @@ export default function RunsPage() {
         run.rushed === false
       ).length > 0 && (
           <Link href="/runs/pending" className="block mb-6">
-            <div className="bg-gradient-to-r from-yellow-50 to-orange-50 border-l-4 border-yellow-400 p-4 hover:shadow-md transition-shadow cursor-pointer rounded-lg">
+            <div className="bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 border-l-4 border-yellow-400 p-4 hover:shadow-md transition-shadow cursor-pointer rounded-lg">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <span className="text-3xl">⚠️</span>
                   <div>
-                    <p className="font-semibold text-gray-900">
+                    <p className="font-semibold text-gray-900 dark:text-white">
                       Tienes {runs.filter(run =>
                         run.rareSkillsCount === 0 &&
                         run.normalSkillsCount === 0 &&
@@ -159,7 +159,7 @@ export default function RunsPage() {
                         run.rushed === false
                       ).length !== 1 ? 's' : ''}
                     </p>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
                       Haz clic aquí para completar los detalles
                     </p>
                   </div>
@@ -171,10 +171,10 @@ export default function RunsPage() {
         )}
 
       {/* Filters */}
-      <div className="bg-white shadow sm:rounded-lg p-4 mb-6">
+      <div className="bg-white dark:bg-gray-800 shadow sm:rounded-lg p-4 mb-6">
         <button
           onClick={() => setShowFilters(!showFilters)}
-          className="flex items-center justify-between w-full text-left font-medium text-gray-900"
+          className="flex items-center justify-between w-full text-left font-medium text-gray-900 dark:text-white"
         >
           <span>🔍 Filtros</span>
           <span>{showFilters ? '▲' : '▼'}</span>
@@ -184,13 +184,13 @@ export default function RunsPage() {
           <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* Character Filter */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Personaje
               </label>
               <select
                 value={selectedCharacter}
                 onChange={(e) => setSelectedCharacter(e.target.value)}
-                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                className="block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
               >
                 <option value="">Todos</option>
                 {characters.map(char => (
@@ -203,13 +203,13 @@ export default function RunsPage() {
 
             {/* Track Type Filter */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Tipo de Pista
               </label>
               <select
                 value={selectedTrackType}
                 onChange={(e) => setSelectedTrackType(e.target.value)}
-                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                className="block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
               >
                 <option value="">Todas</option>
                 {TRACK_TYPES.map(track => (
@@ -222,31 +222,31 @@ export default function RunsPage() {
 
             {/* Date Range */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Fecha Desde
               </label>
               <input
                 type="date"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
-                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                className="block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Fecha Hasta
               </label>
               <input
                 type="date"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
-                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                className="block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
               />
             </div>
 
             {/* Place Range */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Posición Mínima
               </label>
               <input
@@ -256,11 +256,11 @@ export default function RunsPage() {
                 placeholder="1"
                 min="1"
                 max="18"
-                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                className="block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Posición Máxima
               </label>
               <input
@@ -270,13 +270,13 @@ export default function RunsPage() {
                 placeholder="18"
                 min="1"
                 max="18"
-                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                className="block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
               />
             </div>
 
             {/* Score Range */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Score Mínimo
               </label>
               <input
@@ -285,11 +285,11 @@ export default function RunsPage() {
                 onChange={(e) => setMinScore(e.target.value)}
                 placeholder="0"
                 min="0"
-                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                className="block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Score Máximo
               </label>
               <input
@@ -298,13 +298,13 @@ export default function RunsPage() {
                 onChange={(e) => setMaxScore(e.target.value)}
                 placeholder="999999"
                 min="0"
-                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                className="block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
               />
             </div>
 
             {/* Skills */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Mínimo Skills Raras
               </label>
               <input
@@ -313,11 +313,11 @@ export default function RunsPage() {
                 onChange={(e) => setMinRareSkills(e.target.value)}
                 placeholder="0"
                 min="0"
-                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                className="block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Mínimo Skills Normales
               </label>
               <input
@@ -326,19 +326,19 @@ export default function RunsPage() {
                 onChange={(e) => setMinNormalSkills(e.target.value)}
                 placeholder="0"
                 min="0"
-                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                className="block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
               />
             </div>
 
             {/* Status Filters */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Rushed
               </label>
               <select
                 value={filterRushed}
                 onChange={(e) => setFilterRushed(e.target.value)}
-                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                className="block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
               >
                 <option value="">Todos</option>
                 <option value="true">Sí</option>
@@ -346,13 +346,13 @@ export default function RunsPage() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Good Positioning
               </label>
               <select
                 value={filterGoodPos}
                 onChange={(e) => setFilterGoodPos(e.target.value)}
-                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                className="block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
               >
                 <option value="">Todos</option>
                 <option value="true">Sí</option>
@@ -360,13 +360,13 @@ export default function RunsPage() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Skill Única Activada
               </label>
               <select
                 value={filterUniqueSkill}
                 onChange={(e) => setFilterUniqueSkill(e.target.value)}
-                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                className="block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
               >
                 <option value="">Todos</option>
                 <option value="true">Sí</option>
@@ -395,63 +395,63 @@ export default function RunsPage() {
 
       {runs.length === 0 ? (
         <div className="card text-center py-12">
-          <p className="text-gray-600 mb-4">No tienes carreras registradas</p>
+          <p className="text-gray-600 dark:text-gray-400 mb-4">No tienes carreras registradas</p>
           <Link href="/runs/new" className="btn btn-primary">
             Registrar tu primera carrera
           </Link>
         </div>
       ) : (
         <div className="card overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead className="bg-gray-50 dark:bg-gray-700">
               <tr>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Fecha</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Personaje</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Pista</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Posición</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Score</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Skills</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Estado</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Acciones</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Fecha</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Personaje</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Pista</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Posición</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Score</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Skills</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Estado</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Acciones</th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
               {runs.map((run) => (
-                <tr key={run.id} className="hover:bg-gray-50">
-                  <td className="px-4 py-3 whitespace-nowrap text-sm">
+                <tr key={run.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                  <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">
                     {format(new Date(run.date), 'dd/MM/yyyy')}
                   </td>
                   <td className="px-4 py-3 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900">
+                    <div className="text-sm font-medium text-gray-900 dark:text-white">
                       {run.characterTraining?.characterName}
                     </div>
-                    <div className="text-xs text-gray-500">
+                    <div className="text-xs text-gray-500 dark:text-gray-400">
                       {run.characterTraining?.identifierVersion}
                     </div>
                   </td>
-                  <td className="px-4 py-3 whitespace-nowrap text-sm">
+                  <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">
                     {TRACK_NAMES[run.trackType]}
                   </td>
                   <td className="px-4 py-3 whitespace-nowrap">
                     <span className={`px-2 py-1 text-xs font-medium rounded ${run.finalPlace <= 3
-                      ? 'bg-green-100 text-green-800'
+                      ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
                       : run.finalPlace <= 6
-                        ? 'bg-blue-100 text-blue-800'
-                        : 'bg-gray-100 text-gray-800'
+                        ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
+                        : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
                       }`}>
                       #{run.finalPlace}
                     </span>
                   </td>
-                  <td className="px-4 py-3 whitespace-nowrap font-bold text-primary-600">
+                  <td className="px-4 py-3 whitespace-nowrap font-bold text-primary-600 dark:text-primary-400">
                     {run.score}
                   </td>
                   <td className="px-4 py-3 whitespace-nowrap text-sm">
                     <div className="flex gap-2">
-                      <span className="bg-purple-100 text-purple-800 px-2 py-0.5 rounded text-xs">
+                      <span className="bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200 px-2 py-0.5 rounded text-xs">
                         {run.rareSkillsCount} raras
                       </span>
                       {run.uniqueSkillActivated && (
-                        <span className="bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded text-xs">
+                        <span className="bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200 px-2 py-0.5 rounded text-xs">
                           Única
                         </span>
                       )}
@@ -460,12 +460,12 @@ export default function RunsPage() {
                   <td className="px-4 py-3 whitespace-nowrap">
                     <div className="flex flex-col gap-1">
                       {run.rushed && (
-                        <span className="bg-red-100 text-red-800 px-2 py-0.5 rounded text-xs">
+                        <span className="bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200 px-2 py-0.5 rounded text-xs">
                           Rushed
                         </span>
                       )}
                       {run.goodPositioning && (
-                        <span className="bg-green-100 text-green-800 px-2 py-0.5 rounded text-xs">
+                        <span className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 px-2 py-0.5 rounded text-xs">
                           Buen pos.
                         </span>
                       )}
@@ -475,13 +475,13 @@ export default function RunsPage() {
                     <div className="flex gap-3">
                       <Link
                         href={`/runs/${run.id}/edit`}
-                        className="text-primary-600 hover:text-primary-800"
+                        className="text-primary-600 hover:text-primary-800 dark:text-primary-400 dark:hover:text-primary-300"
                       >
                         Editar
                       </Link>
                       <button
                         onClick={() => handleDelete(run.id)}
-                        className="text-red-600 hover:text-red-800"
+                        className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300"
                       >
                         Eliminar
                       </button>

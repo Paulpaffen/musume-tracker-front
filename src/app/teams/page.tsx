@@ -72,14 +72,14 @@ export default function TeamRecommendationsPage() {
     const currentTeam = recommendations[selectedTrack] || [];
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-pink-50">
-            <div className="max-w-7xl mx-auto px-4 py-12">
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-purple-900/20 dark:to-pink-900/20 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-8">
+            <div className="max-w-7xl mx-auto">
                 {/* Header */}
                 <div className="text-center mb-12">
-                    <h1 className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600 mb-4">
+                    <h1 className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 mb-4">
                         ⭐ Equipos Recomendados ⭐
                     </h1>
-                    <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+                    <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
                         Basado en tus estadísticas, estos son los mejores equipos para cada tipo de pista
                     </p>
                 </div>
@@ -100,8 +100,8 @@ export default function TeamRecommendationsPage() {
                   ${selectedTrack === track
                                         ? `bg-gradient-to-r ${TRACK_COLORS[track as keyof typeof TRACK_COLORS]} scale-110 shadow-2xl`
                                         : hasTeam
-                                            ? 'bg-gray-400 hover:scale-105 hover:shadow-lg'
-                                            : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                                            ? 'bg-gray-400 dark:bg-gray-700 hover:scale-105 hover:shadow-lg'
+                                            : 'bg-gray-200 dark:bg-gray-800 text-gray-400 dark:text-gray-600 cursor-not-allowed'
                                     }
                 `}
                             >
@@ -110,7 +110,7 @@ export default function TeamRecommendationsPage() {
                                     <span>{TRACK_NAMES[track as keyof typeof TRACK_NAMES]}</span>
                                 </div>
                                 {hasTeam && (
-                                    <div className="absolute -top-2 -right-2 bg-white text-purple-600 rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold shadow-lg">
+                                    <div className="absolute -top-2 -right-2 bg-white dark:bg-gray-800 text-purple-600 dark:text-purple-400 rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold shadow-lg">
                                         {team.length}
                                     </div>
                                 )}
@@ -121,12 +121,12 @@ export default function TeamRecommendationsPage() {
 
                 {/* Team Display */}
                 {currentTeam.length === 0 ? (
-                    <div className="card text-center py-16">
+                    <div className="card text-center py-16 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm">
                         <div className="text-6xl mb-4">😔</div>
-                        <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
                             No hay datos suficientes
                         </h2>
-                        <p className="text-gray-600 mb-6">
+                        <p className="text-gray-600 dark:text-gray-400 mb-6">
                             Necesitas registrar más carreras en {TRACK_NAMES[selectedTrack as keyof typeof TRACK_NAMES]} para obtener recomendaciones
                         </p>
                         <Link href="/runs/new" className="btn btn-primary">
@@ -237,29 +237,29 @@ export default function TeamRecommendationsPage() {
                         </div>
 
                         {/* Team Summary */}
-                        <div className="card bg-gradient-to-r from-purple-50 to-pink-50 border-2 border-purple-200">
+                        <div className="card bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 border-2 border-purple-200 dark:border-purple-800">
                             <div className="text-center">
-                                <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
                                     📊 Resumen del Equipo
                                 </h3>
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                     <div>
-                                        <div className="text-3xl font-black text-purple-600">
+                                        <div className="text-3xl font-black text-purple-600 dark:text-purple-400">
                                             {Math.round(currentTeam.reduce((sum, m) => sum + m.averageScore, 0) / currentTeam.length).toLocaleString()}
                                         </div>
-                                        <div className="text-sm text-gray-600 font-semibold">Score Promedio del Equipo</div>
+                                        <div className="text-sm text-gray-600 dark:text-gray-400 font-semibold">Score Promedio del Equipo</div>
                                     </div>
                                     <div>
-                                        <div className="text-3xl font-black text-pink-600">
+                                        <div className="text-3xl font-black text-pink-600 dark:text-pink-400">
                                             {currentTeam.reduce((sum, m) => sum + m.totalRuns, 0)}
                                         </div>
-                                        <div className="text-sm text-gray-600 font-semibold">Total de Carreras</div>
+                                        <div className="text-sm text-gray-600 dark:text-gray-400 font-semibold">Total de Carreras</div>
                                     </div>
                                     <div>
-                                        <div className="text-3xl font-black text-indigo-600">
+                                        <div className="text-3xl font-black text-indigo-600 dark:text-indigo-400">
                                             {currentTeam.length}
                                         </div>
-                                        <div className="text-sm text-gray-600 font-semibold">Miembros del Equipo</div>
+                                        <div className="text-sm text-gray-600 dark:text-gray-400 font-semibold">Miembros del Equipo</div>
                                     </div>
                                 </div>
                             </div>
