@@ -34,6 +34,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
         { href: '/teams', label: 'Equipos', icon: '⭐' },
         { href: '/runs', label: 'Carreras', icon: '🏃' },
         { href: '/runs/pending', label: 'Pendientes', icon: '⏳' },
+        { href: '/simulator', label: 'Simulador IA', icon: '🤖' },
         { href: '/ocr', label: 'OCR Scan', icon: '📷' },
         { href: '/runs/new', label: 'Nueva Carrera', icon: '➕' },
         { href: '/friends', label: 'Amigos', icon: '👫' },
@@ -74,8 +75,8 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
                                 key={item.href}
                                 href={item.href}
                                 className={`flex items-center gap-3 px-3 py-3 rounded-xl transition-all duration-200 group ${pathname === item.href
-                                        ? 'bg-primary-100 text-primary-700 dark:bg-primary-900/50 dark:text-primary-300 shadow-sm'
-                                        : 'text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800'
+                                    ? 'bg-primary-100 text-primary-700 dark:bg-primary-900/50 dark:text-primary-300 shadow-sm'
+                                    : 'text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800'
                                     }`}
                                 title={!isOpen ? item.label : ''}
                             >

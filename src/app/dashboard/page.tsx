@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { statsAPI } from '@/lib/api';
 import { DashboardStats } from '@/lib/types';
 import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
@@ -8,6 +9,7 @@ import { TRACK_NAMES, TRACK_COLORS } from '@/lib/constants';
 import { format } from 'date-fns';
 
 export default function DashboardPage() {
+  const router = useRouter();
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [includeArchived, setIncludeArchived] = useState(false);
@@ -48,17 +50,25 @@ export default function DashboardPage() {
     <div className="space-y-8">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
-        <div className="flex items-center">
-          <input
-            id="includeArchived"
-            type="checkbox"
-            checked={includeArchived}
-            onChange={(e) => setIncludeArchived(e.target.checked)}
-            className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
-          />
-          <label htmlFor="includeArchived" className="ml-2 block text-sm text-gray-900 dark:text-gray-300">
-            Incluir Archivados
-          </label>
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => router.push('/simulator')}
+            className="btn-secondary flex items-center gap-2"
+          >
+            <span>🤖</span> Simulador IA
+          </button>
+          <div className="flex items-center">
+            <input
+              id="includeArchived"
+              type="checkbox"
+              checked={includeArchived}
+              onChange={(e) => setIncludeArchived(e.target.checked)}
+              className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+            />
+            <label htmlFor="includeArchived" className="ml-2 block text-sm text-gray-900 dark:text-gray-300">
+              Incluir Archivados
+            </label>
+          </div>
         </div>
       </div>
 
