@@ -55,6 +55,12 @@ interface CharacterStats {
     scoreVsNormalSkills: RegressionResult | null;
     scoreVsFinalPlace: RegressionResult | null;
   };
+  trainingData?: Array<{
+    score: number;
+    finalPlace: number;
+    rareSkills: number;
+    normalSkills: number;
+  }>;
 }
 
 interface RegressionResult {
@@ -76,6 +82,56 @@ export default function CharacterDetailsPage() {
   const [showScore, setShowScore] = useState(true);
   const [showSkills, setShowSkills] = useState(true);
   const [showPlace, setShowPlace] = useState(true);
+
+  // Simulator State
+  const [simRareSkills, setSimRareSkills] = useState(2);
+  const [simNormalSkills, setSimNormalSkills] = useState(4);
+  const [simPlace, setSimPlace] = useState(1);
+  const [simPrediction, setSimPrediction] = useState<{ score: number; neighbors: any[] } | null>(null);
+
+  useEffect(() => {
+    if (stats?.trainingData && stats.trainingData.length > 0) {
+      runSimulation();
+    }
+  }, [simRareSkills, simNormalSkills, simPlace, stats]);
+
+  const runSimulation = () => {
+    if (!stats?.trainingData) return;
+
+    // Simple KNN Implementation (K=5)
+    const k = 5;
+    const data = stats.trainingData;
+
+    // Calculate distances
+    // We normalize simply by dividing by max possible values to give equal weight
+    // Rare: 0-10, Normal: 0-20, Place: 1-18
+    const distances = data.map(point => {
+      const dRare = (point.rareSkills - simRareSkills) / 10;
+      const dNormal = (point.normalSkills - simNormalSkills) / 20;
+      const dPlace = (point.finalPlace - simPlace) / 18;
+
+      const distance = Math.sqrt(dRare * dRare + dNormal * dNormal + dPlace * dPlace);
+      return { ...point, distance };
+    });
+
+    // Sort by distance and take top K
+    const neighbors = distances.sort((a, b) => a.distance - b.distance).slice(0, k);
+
+    // Weighted average score (inverse distance weighting)
+    let totalWeight = 0;
+    let weightedScore = 0;
+
+    neighbors.forEach(n => {
+      const weight = 1 / (n.distance + 0.0001); // Avoid division by zero
+      weightedScore += n.score * weight;
+      totalWeight += weight;
+    });
+
+    setSimPrediction({
+      score: Math.round(weightedScore / totalWeight),
+      neighbors
+    });
+  };
 
   useEffect(() => {
     loadData();
@@ -522,6 +578,90 @@ export default function CharacterDetailsPage() {
               </div>
             )
           }
+
+          {/* AI Simulator */}
+          {stats.trainingData && stats.trainingData.length > 0 && (
+            <div className="card bg-gradient-to-br from-indigo-50 to-purple-50 border-indigo-100">
+              <div className="flex items-center gap-2 mb-6">
+                <span className="text-2xl">🤖</span>
+                <h2 className="text-xl font-bold text-gray-900">
+                  Simulador de Rendimiento (IA / KNN)
+                </h2>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {/* Controls */}
+                <div className="space-y-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Skills Raras: <span className="font-bold text-indigo-600">{simRareSkills}</span>
+                    </label>
+                    <input
+                      type="range"
+                      min="0"
+                      max="10"
+                      value={simRareSkills}
+                      onChange={(e) => setSimRareSkills(parseInt(e.target.value))}
+                      className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-indigo-600"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Skills Normales: <span className="font-bold text-indigo-600">{simNormalSkills}</span>
+                    </label>
+                    <input
+                      type="range"
+                      min="0"
+                      max="20"
+                      value={simNormalSkills}
+                      onChange={(e) => setSimNormalSkills(parseInt(e.target.value))}
+                      className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-indigo-600"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Posición Final: <span className="font-bold text-indigo-600">{simPlace}</span>
+                    </label>
+                    <input
+                      type="range"
+                      min="1"
+                      max="18"
+                      value={simPlace}
+                      onChange={(e) => setSimPlace(parseInt(e.target.value))}
+                      className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-indigo-600"
+                    />
+                  </div>
+                </div>
+
+                {/* Results */}
+                <div className="bg-white rounded-xl p-6 shadow-sm border border-indigo-100">
+                  <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wide mb-2">
+                    Score Predicho
+                  </h3>
+                  <div className="flex items-baseline gap-2 mb-6">
+                    <span className="text-4xl font-bold text-indigo-600">
+                      {simPrediction?.score.toLocaleString()}
+                    </span>
+                    <span className="text-sm text-gray-400">pts</span>
+                  </div>
+
+                  <h4 className="text-xs font-semibold text-gray-400 uppercase mb-3">
+                    Basado en tus 5 carreras más similares:
+                  </h4>
+                  <div className="space-y-2">
+                    {simPrediction?.neighbors.map((n, i) => (
+                      <div key={i} className="flex justify-between items-center text-sm p-2 bg-gray-50 rounded hover:bg-indigo-50 transition-colors">
+                        <span className="text-gray-600">
+                          #{n.finalPlace} | {n.rareSkills} Raras | {n.normalSkills} Normales
+                        </span>
+                        <span className="font-bold text-gray-900">{n.score.toLocaleString()}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Performance Indicators */}
           <div className="card">
