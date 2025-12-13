@@ -193,7 +193,7 @@ export default function CharactersPage() {
               <div className="flex justify-between items-start mb-4">
                 <div>
                   <div className="flex items-center gap-2">
-                    <h3 className="text-xl font-bold text-gray-900">
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white">
                       {character.characterName}
                     </h3>
                     {character.isArchived && (
@@ -202,7 +202,7 @@ export default function CharactersPage() {
                       </span>
                     )}
                   </div>
-                  <p className="text-sm text-gray-600">{character.identifierVersion}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">{character.identifierVersion}</p>
                 </div>
                 <span className="bg-primary-100 text-primary-700 px-3 py-1 rounded-full text-sm font-medium">
                   {character._count?.runs || 0} runs

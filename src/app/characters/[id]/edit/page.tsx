@@ -13,6 +13,12 @@ export default function EditCharacterPage({ params }: { params: { id: string } }
         characterName: '',
         identifierVersion: '',
         notes: '',
+        speed: 0,
+        stamina: 0,
+        power: 0,
+        guts: 0,
+        wit: 0,
+        rank: '',
     });
 
     useEffect(() => {
@@ -24,6 +30,12 @@ export default function EditCharacterPage({ params }: { params: { id: string } }
                     characterName: char.characterName,
                     identifierVersion: char.identifierVersion,
                     notes: char.notes || '',
+                    speed: char.speed || 0,
+                    stamina: char.stamina || 0,
+                    power: char.power || 0,
+                    guts: char.guts || 0,
+                    wit: char.wit || 0,
+                    rank: char.rank || '',
                 });
             } catch (error) {
                 console.error('Failed to fetch character:', error);
@@ -132,6 +144,102 @@ export default function EditCharacterPage({ params }: { params: { id: string } }
                                                 onChange={handleChange}
                                                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                                             />
+                                        </div>
+                                    </div>
+
+                                    {/* Stats Section */}
+                                    <div className="col-span-full border-t border-gray-200 pt-6 mt-6">
+                                        <h3 className="text-base font-semibold leading-7 text-gray-900 mb-4">Character Stats</h3>
+                                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                                            <div>
+                                                <label htmlFor="speed" className="block text-sm font-medium leading-6 text-gray-900">
+                                                    Speed
+                                                </label>
+                                                <input
+                                                    type="number"
+                                                    name="speed"
+                                                    id="speed"
+                                                    min="0"
+                                                    max="1500"
+                                                    value={formData.speed}
+                                                    onChange={handleChange}
+                                                    className="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label htmlFor="stamina" className="block text-sm font-medium leading-6 text-gray-900">
+                                                    Stamina
+                                                </label>
+                                                <input
+                                                    type="number"
+                                                    name="stamina"
+                                                    id="stamina"
+                                                    min="0"
+                                                    max="1500"
+                                                    value={formData.stamina}
+                                                    onChange={handleChange}
+                                                    className="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label htmlFor="power" className="block text-sm font-medium leading-6 text-gray-900">
+                                                    Power
+                                                </label>
+                                                <input
+                                                    type="number"
+                                                    name="power"
+                                                    id="power"
+                                                    min="0"
+                                                    max="1500"
+                                                    value={formData.power}
+                                                    onChange={handleChange}
+                                                    className="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label htmlFor="guts" className="block text-sm font-medium leading-6 text-gray-900">
+                                                    Guts
+                                                </label>
+                                                <input
+                                                    type="number"
+                                                    name="guts"
+                                                    id="guts"
+                                                    min="0"
+                                                    max="1500"
+                                                    value={formData.guts}
+                                                    onChange={handleChange}
+                                                    className="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label htmlFor="wit" className="block text-sm font-medium leading-6 text-gray-900">
+                                                    Wit
+                                                </label>
+                                                <input
+                                                    type="number"
+                                                    name="wit"
+                                                    id="wit"
+                                                    min="0"
+                                                    max="1500"
+                                                    value={formData.wit}
+                                                    onChange={handleChange}
+                                                    className="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label htmlFor="rank" className="block text-sm font-medium leading-6 text-gray-900">
+                                                    Rank
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    name="rank"
+                                                    id="rank"
+                                                    value={formData.rank}
+                                                    onChange={handleChange}
+                                                    placeholder="e.g. A+, SS"
+                                                    className="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                                                />
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
