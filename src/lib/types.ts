@@ -29,6 +29,11 @@ export interface FriendRequest {
   acceptedAt?: string | null;
 }
 
+export interface Skill {
+  name: string;
+  isRare: boolean;
+}
+
 export interface Character {
   isArchived: boolean;
   id: string;
@@ -46,6 +51,8 @@ export interface Character {
   guts?: number;
   wit?: number;
   rank?: string;
+  uniqueSkillLevel?: number;
+  skills?: Skill[];
 }
 
 export enum TrackType {
@@ -139,4 +146,6 @@ export interface CharacterTraining {
   guts?: number;
   wit?: number;
   rank?: string;
+  uniqueSkillLevel?: number;
+  skills?: Skill[];
 }

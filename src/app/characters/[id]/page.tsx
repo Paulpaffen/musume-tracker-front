@@ -83,6 +83,11 @@ export default function CharacterDetailsPage() {
   const [showSkills, setShowSkills] = useState(true);
   const [showPlace, setShowPlace] = useState(true);
 
+  // Skills Modal State
+  const [showSkillsModal, setShowSkillsModal] = useState(false);
+  const [editingSkills, setEditingSkills] = useState<Array<{ name: string; isRare: boolean }>>([]);
+  const [uniqueSkillLevel, setUniqueSkillLevel] = useState(0);
+
   // Simulator State
   const [simRareSkills, setSimRareSkills] = useState(2);
   const [simNormalSkills, setSimNormalSkills] = useState(4);
@@ -276,6 +281,49 @@ export default function CharacterDetailsPage() {
               <div className="font-bold text-lg">{character.wit || '-'}</div>
             </div>
           </div>
+
+          {/* Skills Section */}
+          {(character.uniqueSkillLevel || (character.skills && character.skills.length > 0)) && (
+            <div className="mt-4 p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
+              <h3 className="text-sm font-semibold text-purple-900 dark:text-purple-300 mb-3">
+                🎯 Skills
+              </h3>
+              
+              {/* Unique Skill Level */}
+              {character.uniqueSkillLevel && (
+                <div className="mb-3">
+                  <span className="text-xs text-purple-600 dark:text-purple-400">Skill Única:</span>
+                  <span className="ml-2 font-bold text-purple-900 dark:text-purple-100">
+                    Nivel {character.uniqueSkillLevel}
+                  </span>
+                </div>
+              )}
+
+              {/* Skills List */}
+              {character.skills && character.skills.length > 0 && (
+                <div className="space-y-1">
+                  <div className="text-xs text-purple-600 dark:text-purple-400 mb-2">
+                    Skills ({character.skills.filter(s => s.isRare).length} raras, {character.skills.filter(s => !s.isRare).length} normales):
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {character.skills.map((skill, index) => (
+                      <span
+                        key={index}
+                        className={`text-xs px-2 py-1 rounded ${
+                          skill.isRare
+                            ? 'bg-yellow-400 text-yellow-900 font-semibold'
+                            : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
+                        }`}
+                      >
+                        {skill.isRare && '⭐ '}
+                        {skill.name}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </div>
         <div className="flex flex-col gap-2">
           <button
@@ -289,6 +337,23 @@ export default function CharacterDetailsPage() {
             className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 flex items-center justify-center gap-2"
           >
             <span>📷</span> Escanear Stats
+          </button>
+          <button
+            onClick={() => document.getElementById('skills-upload')?.click()}
+            className="rounded-md bg-purple-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-purple-500 flex items-center justify-center gap-2"
+          >
+            <span>🎯</span> Escanear Skills
+          </button>
+          <button
+            onClick={() => {
+              // Load current skills for editing
+              setUniqueSkillLevel(character?.uniqueSkillLevel || 0);
+              setEditingSkills(character?.skills || []);
+              setShowSkillsModal(true);
+            }}
+            className="rounded-md bg-gray-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 flex items-center justify-center gap-2"
+          >
+            <span>✏️</span> Editar Skills
           </button>
           <input
             id="stats-upload"
@@ -318,6 +383,36 @@ export default function CharacterDetailsPage() {
               } catch (err) {
                 console.error(err);
                 alert('Error al escanear imagen o actualizar personaje');
+              }
+            }}
+          />
+
+          <input
+            id="skills-upload"
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={async (e) => {
+              const file = e.target.files?.[0];
+              if (!file) return;
+
+              const formData = new FormData();
+              formData.append('file', file);
+
+              try {
+                console.log('Uploading skills image...');
+                const response = await import('@/lib/api').then(m => m.ocrAPI.scanSkills(formData));
+                const skillsData = response.data;
+
+                console.log('Scanned skills:', skillsData);
+
+                // Open modal with detected skills
+                setUniqueSkillLevel(skillsData.uniqueSkillLevel || 0);
+                setEditingSkills(skillsData.skills || []);
+                setShowSkillsModal(true);
+              } catch (err) {
+                console.error(err);
+                alert('Error al escanear skills');
               }
             }}
           />
@@ -856,6 +951,138 @@ export default function CharacterDetailsPage() {
         </div>
       )
       }
+
+      {/* Skills Modal */}
+      {showSkillsModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+                Editar Skills
+              </h2>
+
+              {/* Unique Skill Level */}
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Nivel de Skill Única: {uniqueSkillLevel}
+                </label>
+                <input
+                  type="range"
+                  min="0"
+                  max="6"
+                  value={uniqueSkillLevel}
+                  onChange={(e) => setUniqueSkillLevel(parseInt(e.target.value))}
+                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                />
+                <div className="flex justify-between text-xs text-gray-500 mt-1">
+                  <span>0</span>
+                  <span>1</span>
+                  <span>2</span>
+                  <span>3</span>
+                  <span>4</span>
+                  <span>5</span>
+                  <span>6</span>
+                </div>
+              </div>
+
+              {/* Skills List */}
+              <div className="mb-6">
+                <div className="flex justify-between items-center mb-3">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Skills ({editingSkills.length})
+                  </label>
+                  <button
+                    onClick={() => setEditingSkills([...editingSkills, { name: '', isRare: false }])}
+                    className="text-sm bg-green-600 text-white px-3 py-1 rounded hover:bg-green-500"
+                  >
+                    + Agregar Skill
+                  </button>
+                </div>
+
+                {editingSkills.length === 0 ? (
+                  <p className="text-gray-500 text-sm text-center py-4">
+                    No se detectaron skills. Usa el botón "Agregar Skill" para agregar manualmente.
+                  </p>
+                ) : (
+                  <div className="space-y-2 max-h-96 overflow-y-auto">
+                    {editingSkills.map((skill, index) => (
+                      <div key={index} className="flex gap-2 items-center bg-gray-50 dark:bg-gray-700 p-3 rounded">
+                        <input
+                          type="text"
+                          value={skill.name}
+                          onChange={(e) => {
+                            const newSkills = [...editingSkills];
+                            newSkills[index].name = e.target.value;
+                            setEditingSkills(newSkills);
+                          }}
+                          placeholder="Nombre de skill"
+                          className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                        />
+                        <button
+                          onClick={() => {
+                            const newSkills = [...editingSkills];
+                            newSkills[index].isRare = !newSkills[index].isRare;
+                            setEditingSkills(newSkills);
+                          }}
+                          className={`px-4 py-2 rounded font-medium ${
+                            skill.isRare
+                              ? 'bg-yellow-500 text-white'
+                              : 'bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-300'
+                          }`}
+                        >
+                          {skill.isRare ? '⭐ Rara' : '○ Normal'}
+                        </button>
+                        <button
+                          onClick={() => {
+                            const newSkills = editingSkills.filter((_, i) => i !== index);
+                            setEditingSkills(newSkills);
+                          }}
+                          className="px-3 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                        >
+                          🗑️
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Actions */}
+              <div className="flex gap-3 justify-end">
+                <button
+                  onClick={() => {
+                    setShowSkillsModal(false);
+                    setEditingSkills([]);
+                    setUniqueSkillLevel(0);
+                  }}
+                  className="px-4 py-2 bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-400"
+                >
+                  Cancelar
+                </button>
+                <button
+                  onClick={async () => {
+                    try {
+                      await characterAPI.update(params.id as string, {
+                        uniqueSkillLevel: uniqueSkillLevel || undefined,
+                        skills: editingSkills.filter(s => s.name.trim().length > 0),
+                      });
+                      alert('Skills guardadas correctamente');
+                      setShowSkillsModal(false);
+                      loadData(); // Reload to show updated skills
+                    } catch (err) {
+                      console.error(err);
+                      alert('Error al guardar skills');
+                    }
+                  }}
+                  className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-500"
+                >
+                  Guardar Skills
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div >
   );
 }

@@ -104,4 +104,10 @@ export const ocrAPI = {
         'Content-Type': 'multipart/form-data',
       },
     }),
+  scanSkills: (formData: FormData) =>
+    api.post('/ocr/scan-skills', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    }),
 };
