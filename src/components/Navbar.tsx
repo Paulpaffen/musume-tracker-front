@@ -29,6 +29,7 @@ export default function Navbar() {
     { href: '/teams', label: '⭐ Equipos' },
     { href: '/runs', label: 'Carreras' },
     { href: '/runs/pending', label: 'Pendientes' },
+    { href: '/simulator', label: '🤖 Simulador IA' },
     { href: '/ocr', label: 'OCR Scan' },
     { href: '/runs/new', label: '+ Nueva Carrera' },
   ];
@@ -50,8 +51,8 @@ export default function Navbar() {
                   key={item.href}
                   href={item.href}
                   className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${pathname === item.href
-                      ? 'bg-primary-100 text-primary-700 dark:bg-primary-900 dark:text-primary-300'
-                      : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'
+                    ? 'bg-primary-100 text-primary-700 dark:bg-primary-900 dark:text-primary-300'
+                    : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'
                     }`}
                 >
                   {item.label}

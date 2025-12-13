@@ -68,6 +68,7 @@ export const runAPI = {
 export const statsAPI = {
   getDashboard: (includeArchived?: boolean) => api.get('/stats/dashboard', { params: { includeArchived } }),
   getCharacter: (id: string) => api.get(`/stats/character/${id}`),
+  getTrainingData: (trackType?: string) => api.get('/stats/training-data', { params: { trackType } }),
 };
 
 // Profile API
