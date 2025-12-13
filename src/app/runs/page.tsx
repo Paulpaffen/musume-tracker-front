@@ -35,6 +35,7 @@ export default function RunsPage() {
   const [filterRushed, setFilterRushed] = useState<string>(''); // '', 'true', 'false'
   const [filterGoodPos, setFilterGoodPos] = useState<string>('');
   const [filterUniqueSkill, setFilterUniqueSkill] = useState<string>('');
+  const [includeArchived, setIncludeArchived] = useState(false);
 
   useEffect(() => {
     loadCharacters();
@@ -66,6 +67,7 @@ export default function RunsPage() {
       if (filterRushed) params.rushed = filterRushed === 'true';
       if (filterGoodPos) params.goodPositioning = filterGoodPos === 'true';
       if (filterUniqueSkill) params.uniqueSkillActivated = filterUniqueSkill === 'true';
+      if (includeArchived) params.includeArchived = 'true';
 
       const response = await runAPI.getAll(params);
       setRuns(response.data);
@@ -95,6 +97,7 @@ export default function RunsPage() {
     setFilterRushed('');
     setFilterGoodPos('');
     setFilterUniqueSkill('');
+    setIncludeArchived(false);
     setLoading(true);
     loadRuns();
   };
@@ -372,6 +375,18 @@ export default function RunsPage() {
                 <option value="true">Sí</option>
                 <option value="false">No</option>
               </select>
+            </div>
+            <div className="flex items-center h-full pt-6">
+              <input
+                id="includeArchived"
+                type="checkbox"
+                checked={includeArchived}
+                onChange={(e) => setIncludeArchived(e.target.checked)}
+                className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+              />
+              <label htmlFor="includeArchived" className="ml-2 block text-sm text-gray-900 dark:text-gray-300">
+                Mostrar carreras de personajes archivados
+              </label>
             </div>
 
             {/* Action Buttons */}
