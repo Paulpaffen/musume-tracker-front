@@ -321,6 +321,52 @@ export default function CharacterDetailsPage() {
               }
             }}
           />
+
+          {/* Paste Area */}
+          <div
+            className="border-2 border-dashed border-indigo-300 dark:border-indigo-700 rounded-lg p-4 text-center bg-indigo-50 dark:bg-indigo-900/10"
+            onPaste={async (e) => {
+              e.preventDefault();
+              const items = e.clipboardData?.items;
+              if (!items) return;
+
+              for (let i = 0; i < items.length; i++) {
+                if (items[i].type.indexOf('image') !== -1) {
+                  const blob = items[i].getAsFile();
+                  if (!blob) continue;
+
+                  const formData = new FormData();
+                  formData.append('file', blob, 'clipboard-image.png');
+
+                  try {
+                    console.log('Uploading pasted image...');
+                    const response = await import('@/lib/api').then(m => m.ocrAPI.scanStats(formData));
+                    const stats = response.data;
+
+                    console.log('Scanned stats:', stats);
+
+                    if (window.confirm(`Stats detectados:\nSpeed: ${stats.speed}\nStamina: ${stats.stamina}\nPower: ${stats.power}\nGuts: ${stats.guts}\nWit: ${stats.wit}\nRank: ${stats.rank}\n\n¿Deseas actualizar el personaje?`)) {
+                      await characterAPI.update(params.id as string, stats);
+                      alert('Personaje actualizado correctamente');
+                      loadData();
+                    }
+                  } catch (err) {
+                    console.error(err);
+                    alert('Error al escanear imagen o actualizar personaje');
+                  }
+                  break;
+                }
+              }
+            }}
+            tabIndex={0}
+          >
+            <div className="text-sm text-indigo-600 dark:text-indigo-400 font-medium">
+              📋 Pega aquí tu captura (Ctrl+V)
+            </div>
+            <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              Win+Shift+S → Ctrl+V aquí
+            </div>
+          </div>
         </div>
       </div>
 
