@@ -118,10 +118,13 @@ export interface DashboardStats {
 }
 
 export interface CharacterTraining {
-  id: number;
+  id: string;
   characterName: string;
   identifierVersion: string;
   notes?: string;
-  dateCreated: string;
-  userId?: number;
+  createdAt: string;
+  updatedAt: string;
+  userId?: string;
+  isArchived: boolean;
+  runs?: Run[];
 }

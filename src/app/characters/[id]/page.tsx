@@ -116,6 +116,29 @@ export default function CharacterDetailsPage() {
     return (TRACK_NAMES as Record<string, string>)[trackType] || trackType;
   };
 
+  // Helper to get creation date with fallback
+  const getCreationDate = () => {
+    if (!character) return '';
+
+    // Try createdAt first
+    const createdDate = new Date(character.createdAt);
+    if (!isNaN(createdDate.getTime())) {
+      return createdDate.toLocaleDateString('es-ES');
+    }
+
+    // Fallback to oldest run if available
+    if (character.runs && character.runs.length > 0) {
+      // runs are sorted by date desc, so the last one is the oldest in this list
+      const oldestRun = character.runs[character.runs.length - 1];
+      const runDate = new Date(oldestRun.date);
+      if (!isNaN(runDate.getTime())) {
+        return runDate.toLocaleDateString('es-ES');
+      }
+    }
+
+    return 'Fecha desconocida';
+  };
+
   // Prepare data for charts
   const trackData = stats?.byTrack?.map((track) => ({
     name: getTrackName(track.trackType),
@@ -151,7 +174,7 @@ export default function CharacterDetailsPage() {
             <p className="text-gray-500 mt-2 italic">{character.notes}</p>
           )}
           <p className="text-sm text-gray-400 mt-2">
-            Creado: {new Date(character.dateCreated).toLocaleDateString('es-ES')}
+            Creado: {getCreationDate()}
           </p>
         </div>
         <div>
