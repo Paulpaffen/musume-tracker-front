@@ -66,7 +66,7 @@ export const runAPI = {
 
 // Stats API
 export const statsAPI = {
-  getDashboard: () => api.get('/stats/dashboard'),
+  getDashboard: (includeArchived?: boolean) => api.get('/stats/dashboard', { params: { includeArchived } }),
   getCharacter: (id: string) => api.get(`/stats/character/${id}`),
 };
 

@@ -10,14 +10,15 @@ import { format } from 'date-fns';
 export default function DashboardPage() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
+  const [includeArchived, setIncludeArchived] = useState(false);
 
   useEffect(() => {
     loadStats();
-  }, []);
+  }, [includeArchived]);
 
   const loadStats = async () => {
     try {
-      const response = await statsAPI.getDashboard();
+      const response = await statsAPI.getDashboard(includeArchived);
       setStats(response.data);
     } catch (error) {
       console.error('Error loading stats:', error);
@@ -45,7 +46,21 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-8">
-      <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
+      <div className="flex justify-between items-center">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
+        <div className="flex items-center">
+          <input
+            id="includeArchived"
+            type="checkbox"
+            checked={includeArchived}
+            onChange={(e) => setIncludeArchived(e.target.checked)}
+            className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+          />
+          <label htmlFor="includeArchived" className="ml-2 block text-sm text-gray-900 dark:text-gray-300">
+            Incluir Archivados
+          </label>
+        </div>
+      </div>
 
       {/* Overview Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -175,30 +190,60 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* Best Runs */}
-      {bestRuns.length > 0 && (
-        <div className="card">
-          <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Mejores Carreras</h2>
-          <div className="space-y-3">
-            {bestRuns.slice(0, 5).map((run) => (
-              <div key={run.id} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                <div className="flex-1">
-                  <p className="font-medium text-gray-900 dark:text-white">
-                    {run.characterTraining?.characterName} - {run.characterTraining?.identifierVersion}
-                  </p>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    {TRACK_NAMES[run.trackType]} • Posición {run.finalPlace}
-                  </p>
+      <div className="grid md:grid-cols-2 gap-6">
+        {/* Recent Runs */}
+        {recentRuns.length > 0 && (
+          <div className="card">
+            <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Últimas Carreras</h2>
+            <div className="space-y-3">
+              {recentRuns.slice(0, 3).map((run) => (
+                <div key={run.id} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                  <div className="flex-1">
+                    <p className="font-medium text-gray-900 dark:text-white">
+                      {run.characterTraining?.characterName}
+                    </p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                      {run.characterTraining?.identifierVersion}
+                    </p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                      {TRACK_NAMES[run.trackType]} • #{run.finalPlace}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-xl font-bold text-primary-600 dark:text-primary-400">{run.score}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">{format(new Date(run.date), 'dd/MM')}</p>
+                  </div>
                 </div>
-                <div className="text-right">
-                  <p className="text-2xl font-bold text-primary-600 dark:text-primary-400">{run.score}</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">{format(new Date(run.date), 'dd/MM/yyyy')}</p>
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
-      )}
+        )}
+
+        {/* Best Runs */}
+        {bestRuns.length > 0 && (
+          <div className="card">
+            <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Mejores Carreras</h2>
+            <div className="space-y-3">
+              {bestRuns.slice(0, 5).map((run) => (
+                <div key={run.id} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                  <div className="flex-1">
+                    <p className="font-medium text-gray-900 dark:text-white">
+                      {run.characterTraining?.characterName} - {run.characterTraining?.identifierVersion}
+                    </p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      {TRACK_NAMES[run.trackType]} • Posición {run.finalPlace}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-2xl font-bold text-primary-600 dark:text-primary-400">{run.score}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">{format(new Date(run.date), 'dd/MM/yyyy')}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
