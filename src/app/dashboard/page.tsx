@@ -42,7 +42,7 @@ export default function DashboardPage() {
     );
   }
 
-  const { overview, byTrack, byCharacter, recentRuns, bestRuns } = stats;
+  const { overview, byTrack, byCharacter, recentRuns, bestRuns, recentByTrack, recentBestRuns } = stats;
 
   return (
     <div className="space-y-8">
@@ -155,6 +155,30 @@ export default function DashboardPage() {
         </div>
       )}
 
+      {/* Recent Stats by Track */}
+      {recentByTrack && recentByTrack.length > 0 && (
+        <div className="card">
+          <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Rendimiento Reciente por Pista (Últimas 3 veces)</h2>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={recentByTrack}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+              <XAxis
+                dataKey="trackType"
+                tickFormatter={(value) => TRACK_NAMES[value as keyof typeof TRACK_NAMES]}
+                stroke="#9CA3AF"
+              />
+              <YAxis stroke="#9CA3AF" />
+              <Tooltip
+                labelFormatter={(value) => TRACK_NAMES[value as keyof typeof TRACK_NAMES]}
+                contentStyle={{ backgroundColor: '#1F2937', borderColor: '#374151', color: '#F3F4F6' }}
+              />
+              <Legend />
+              <Bar dataKey="averageScore" fill="#8b5cf6" name="Score Promedio Reciente" />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      )}
+
       {/* Stats by Character */}
       {byCharacter.length > 0 && (
         <div className="card">
@@ -197,6 +221,34 @@ export default function DashboardPage() {
             <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Últimas Carreras</h2>
             <div className="space-y-3">
               {recentRuns.slice(0, 3).map((run) => (
+                <div key={run.id} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                  <div className="flex-1">
+                    <p className="font-medium text-gray-900 dark:text-white">
+                      {run.characterTraining?.characterName}
+                    </p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                      {run.characterTraining?.identifierVersion}
+                    </p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                      {TRACK_NAMES[run.trackType]} • #{run.finalPlace}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-xl font-bold text-primary-600 dark:text-primary-400">{run.score}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">{format(new Date(run.date), 'dd/MM')}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Recent Best Runs */}
+        {recentBestRuns && recentBestRuns.length > 0 && (
+          <div className="card">
+            <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Mejores de las Últimas Carreras</h2>
+            <div className="space-y-3">
+              {recentBestRuns.map((run) => (
                 <div key={run.id} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
                   <div className="flex-1">
                     <p className="font-medium text-gray-900 dark:text-white">

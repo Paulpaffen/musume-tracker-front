@@ -101,6 +101,12 @@ export interface DashboardStats {
   }>;
   recentRuns: Run[];
   bestRuns: Run[];
+  recentByTrack: Array<{
+    trackType: TrackType;
+    averageScore: number;
+    totalRuns: number;
+  }>;
+  recentBestRuns: Run[];
 }
 
 export interface CharacterTraining {
