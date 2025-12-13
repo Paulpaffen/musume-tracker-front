@@ -18,6 +18,10 @@ import {
   Cell,
   LineChart,
   Line,
+  ScatterChart,
+  Scatter,
+  ZAxis,
+  ComposedChart,
 } from 'recharts';
 import { format } from 'date-fns';
 import { TRACK_NAMES, TRACK_COLORS } from '@/lib/constants';
@@ -46,6 +50,18 @@ interface CharacterStats {
     rareSkills: number;
     normalSkills: number;
   }>;
+  impactAnalysis?: {
+    scoreVsRareSkills: RegressionResult | null;
+    scoreVsNormalSkills: RegressionResult | null;
+    scoreVsFinalPlace: RegressionResult | null;
+  };
+}
+
+interface RegressionResult {
+  slope: number;
+  intercept: number;
+  correlation: number;
+  dataPoints: Array<{ x: number; y: number }>;
 }
 
 const COLORS = ['#ec4899', '#8b5cf6', '#3b82f6', '#10b981', '#f59e0b'];
@@ -398,6 +414,82 @@ export default function CharacterDetailsPage() {
               </table>
             </div>
           </div>
+
+          {/* Impact Analysis */}
+          {
+            stats.impactAnalysis && (
+              <div className="card">
+                <h2 className="text-xl font-bold text-gray-900 mb-4">
+                  Análisis de Impacto (Regresión Lineal)
+                </h2>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {/* Score vs Rare Skills */}
+                  {stats.impactAnalysis.scoreVsRareSkills && (
+                    <div className="border rounded-lg p-4">
+                      <h3 className="text-lg font-medium text-gray-800 mb-2">Impacto de Skills Raras</h3>
+                      <p className="text-sm text-gray-600 mb-4">
+                        Cada skill rara añade aprox. <span className="font-bold text-green-600">{Math.round(stats.impactAnalysis.scoreVsRareSkills.slope)} puntos</span>.
+                        <br />
+                        Correlación: <span className="font-bold">{stats.impactAnalysis.scoreVsRareSkills.correlation.toFixed(2)}</span>
+                      </p>
+                      <ResponsiveContainer width="100%" height={250}>
+                        <ComposedChart
+                          data={stats.impactAnalysis.scoreVsRareSkills.dataPoints}
+                          margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
+                        >
+                          <CartesianGrid strokeDasharray="3 3" />
+                          <XAxis type="number" dataKey="x" name="Skills Raras" label={{ value: 'Skills Raras', position: 'bottom', offset: 0 }} />
+                          <YAxis type="number" dataKey="y" name="Score" label={{ value: 'Score', angle: -90, position: 'insideLeft' }} />
+                          <Tooltip cursor={{ strokeDasharray: '3 3' }} />
+                          <Scatter name="Carreras" dataKey="y" fill="#f59e0b" />
+                          <Line
+                            type="monotone"
+                            dataKey={(point) => stats.impactAnalysis!.scoreVsRareSkills!.slope * point.x + stats.impactAnalysis!.scoreVsRareSkills!.intercept}
+                            stroke="#ef4444"
+                            dot={false}
+                            activeDot={false}
+                            name="Tendencia"
+                          />
+                        </ComposedChart>
+                      </ResponsiveContainer>
+                    </div>
+                  )}
+
+                  {/* Score vs Final Place */}
+                  {stats.impactAnalysis.scoreVsFinalPlace && (
+                    <div className="border rounded-lg p-4">
+                      <h3 className="text-lg font-medium text-gray-800 mb-2">Impacto de la Posición</h3>
+                      <p className="text-sm text-gray-600 mb-4">
+                        Cada posición perdida cuesta aprox. <span className="font-bold text-red-600">{Math.round(stats.impactAnalysis.scoreVsFinalPlace.slope)} puntos</span>.
+                        <br />
+                        Correlación: <span className="font-bold">{stats.impactAnalysis.scoreVsFinalPlace.correlation.toFixed(2)}</span>
+                      </p>
+                      <ResponsiveContainer width="100%" height={250}>
+                        <ComposedChart
+                          data={stats.impactAnalysis.scoreVsFinalPlace.dataPoints}
+                          margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
+                        >
+                          <CartesianGrid strokeDasharray="3 3" />
+                          <XAxis type="number" dataKey="x" name="Posición" label={{ value: 'Posición', position: 'bottom', offset: 0 }} domain={[1, 12]} />
+                          <YAxis type="number" dataKey="y" name="Score" label={{ value: 'Score', angle: -90, position: 'insideLeft' }} />
+                          <Tooltip cursor={{ strokeDasharray: '3 3' }} />
+                          <Scatter name="Carreras" dataKey="y" fill="#3b82f6" />
+                          <Line
+                            type="monotone"
+                            dataKey={(point) => stats.impactAnalysis!.scoreVsFinalPlace!.slope * point.x + stats.impactAnalysis!.scoreVsFinalPlace!.intercept}
+                            stroke="#ef4444"
+                            dot={false}
+                            activeDot={false}
+                            name="Tendencia"
+                          />
+                        </ComposedChart>
+                      </ResponsiveContainer>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )
+          }
 
           {/* Performance Indicators */}
           <div className="card">
