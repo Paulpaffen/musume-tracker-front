@@ -16,7 +16,10 @@ import {
   PieChart,
   Pie,
   Cell,
+  LineChart,
+  Line,
 } from 'recharts';
+import { format } from 'date-fns';
 import { TRACK_NAMES, TRACK_COLORS } from '@/lib/constants';
 
 interface CharacterStats {
@@ -36,6 +39,12 @@ interface CharacterStats {
   goodPositioningRate: number;
   averageRareSkills: number;
   averageNormalSkills: number;
+  recentHistory: Array<{
+    date: string;
+    score: number;
+    rareSkills: number;
+    normalSkills: number;
+  }>;
 }
 
 const COLORS = ['#ec4899', '#8b5cf6', '#3b82f6', '#10b981', '#f59e0b'];
@@ -47,6 +56,8 @@ export default function CharacterDetailsPage() {
   const [stats, setStats] = useState<CharacterStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [showScore, setShowScore] = useState(true);
+  const [showSkills, setShowSkills] = useState(true);
 
   useEffect(() => {
     loadData();
@@ -232,6 +243,82 @@ export default function CharacterDetailsPage() {
             </div>
           </div>
 
+          {/* Recent History Chart */}
+          {stats.recentHistory && stats.recentHistory.length > 0 && (
+            <div className="card">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-bold text-gray-900">
+                  Historial Reciente (Últimas {stats.recentHistory.length} carreras)
+                </h2>
+                <div className="flex gap-4">
+                  <label className="flex items-center gap-2 text-sm text-gray-600">
+                    <input
+                      type="checkbox"
+                      checked={showScore}
+                      onChange={(e) => setShowScore(e.target.checked)}
+                      className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                    />
+                    Score
+                  </label>
+                  <label className="flex items-center gap-2 text-sm text-gray-600">
+                    <input
+                      type="checkbox"
+                      checked={showSkills}
+                      onChange={(e) => setShowSkills(e.target.checked)}
+                      className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                    />
+                    Skills (Raras/Normales)
+                  </label>
+                </div>
+              </div>
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={stats.recentHistory}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis
+                    dataKey="date"
+                    tickFormatter={(date) => format(new Date(date), 'dd/MM')}
+                  />
+                  <YAxis yAxisId="left" orientation="left" stroke="#8884d8" />
+                  <YAxis yAxisId="right" orientation="right" stroke="#82ca9d" />
+                  <Tooltip
+                    labelFormatter={(date) => format(new Date(date), 'dd/MM/yyyy')}
+                  />
+                  <Legend />
+                  {showScore && (
+                    <Line
+                      yAxisId="left"
+                      type="monotone"
+                      dataKey="score"
+                      stroke="#8884d8"
+                      name="Score"
+                      strokeWidth={2}
+                    />
+                  )}
+                  {showSkills && (
+                    <>
+                      <Line
+                        yAxisId="right"
+                        type="monotone"
+                        dataKey="rareSkills"
+                        stroke="#f59e0b"
+                        name="Skills Raras"
+                        strokeWidth={2}
+                      />
+                      <Line
+                        yAxisId="right"
+                        type="monotone"
+                        dataKey="normalSkills"
+                        stroke="#10b981"
+                        name="Skills Normales"
+                        strokeWidth={2}
+                      />
+                    </>
+                  )}
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          )}
+
           {/* Track Details Table */}
           <div className="card">
             <h2 className="text-xl font-bold text-gray-900 mb-4">
@@ -347,7 +434,8 @@ export default function CharacterDetailsPage() {
             Registrar Primera Carrera
           </button>
         </div>
-      )}
-    </div>
+      )
+      }
+    </div >
   );
 }
