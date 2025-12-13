@@ -181,10 +181,10 @@ export default function PendingRunsPage() {
                                             <div className="border-b border-gray-200 pb-4 mb-4">
                                                 <div className="flex justify-between items-start mb-2">
                                                     <div>
-                                                        <h3 className="text-lg font-bold text-gray-900">
+                                                        <h3 className="text-lg font-bold text-gray-900 dark:text-white">
                                                             {run.characterTraining?.characterName}
                                                         </h3>
-                                                        <p className="text-sm text-gray-600">
+                                                        <p className="text-sm text-gray-600 dark:text-gray-300">
                                                             {run.characterTraining?.identifierVersion}
                                                         </p>
                                                     </div>
