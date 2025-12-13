@@ -422,7 +422,7 @@ export default function CharacterDetailsPage() {
                 <h2 className="text-xl font-bold text-gray-900 mb-4">
                   Análisis de Impacto (Regresión Lineal)
                 </h2>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                   {/* Score vs Rare Skills */}
                   {stats.impactAnalysis.scoreVsRareSkills && (
                     <div className="border rounded-lg p-4">
@@ -445,6 +445,38 @@ export default function CharacterDetailsPage() {
                           <Line
                             type="monotone"
                             dataKey={(point) => stats.impactAnalysis!.scoreVsRareSkills!.slope * point.x + stats.impactAnalysis!.scoreVsRareSkills!.intercept}
+                            stroke="#ef4444"
+                            dot={false}
+                            activeDot={false}
+                            name="Tendencia"
+                          />
+                        </ComposedChart>
+                      </ResponsiveContainer>
+                    </div>
+                  )}
+
+                  {/* Score vs Normal Skills */}
+                  {stats.impactAnalysis.scoreVsNormalSkills && (
+                    <div className="border rounded-lg p-4">
+                      <h3 className="text-lg font-medium text-gray-800 mb-2">Impacto de Skills Normales</h3>
+                      <p className="text-sm text-gray-600 mb-4">
+                        Cada skill normal añade aprox. <span className="font-bold text-green-600">{Math.round(stats.impactAnalysis.scoreVsNormalSkills.slope)} puntos</span>.
+                        <br />
+                        Correlación: <span className="font-bold">{stats.impactAnalysis.scoreVsNormalSkills.correlation.toFixed(2)}</span>
+                      </p>
+                      <ResponsiveContainer width="100%" height={250}>
+                        <ComposedChart
+                          data={stats.impactAnalysis.scoreVsNormalSkills.dataPoints}
+                          margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
+                        >
+                          <CartesianGrid strokeDasharray="3 3" />
+                          <XAxis type="number" dataKey="x" name="Skills Normales" label={{ value: 'Skills Normales', position: 'bottom', offset: 0 }} />
+                          <YAxis type="number" dataKey="y" name="Score" label={{ value: 'Score', angle: -90, position: 'insideLeft' }} />
+                          <Tooltip cursor={{ strokeDasharray: '3 3' }} />
+                          <Scatter name="Carreras" dataKey="y" fill="#10b981" />
+                          <Line
+                            type="monotone"
+                            dataKey={(point) => stats.impactAnalysis!.scoreVsNormalSkills!.slope * point.x + stats.impactAnalysis!.scoreVsNormalSkills!.intercept}
                             stroke="#ef4444"
                             dot={false}
                             activeDot={false}
