@@ -15,7 +15,9 @@ export default function CharactersPage() {
   // Filter states
   const [nameFilter, setNameFilter] = useState('');
   const [minRuns, setMinRuns] = useState('');
+
   const [maxRuns, setMaxRuns] = useState('');
+  const [includeArchived, setIncludeArchived] = useState(false);
 
   useEffect(() => {
     loadCharacters();
@@ -26,7 +28,9 @@ export default function CharactersPage() {
       const params: any = {};
       if (nameFilter) params.name = nameFilter;
       if (minRuns) params.minRuns = minRuns;
+
       if (maxRuns) params.maxRuns = maxRuns;
+      if (includeArchived) params.includeArchived = 'true';
 
       const response = await characterAPI.getAll(params);
       setCharacters(response.data);
@@ -45,13 +49,15 @@ export default function CharactersPage() {
   const handleClearFilters = () => {
     setNameFilter('');
     setMinRuns('');
+
     setMaxRuns('');
+    setIncludeArchived(false);
     setLoading(true);
     loadCharacters();
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('¿Estás seguro de eliminar este personaje?')) return;
+    if (!confirm('¿Estás seguro de eliminar este personaje? Esta acción no se puede deshacer.')) return;
 
     try {
       await characterAPI.delete(id);
@@ -59,6 +65,19 @@ export default function CharactersPage() {
     } catch (error) {
       console.error('Error deleting character:', error);
       alert('Error al eliminar el personaje');
+    }
+  };
+
+  const handleArchive = async (character: Character) => {
+    const action = character.isArchived ? 'desarchivar' : 'archivar';
+    if (!confirm(`¿Estás seguro de ${action} este personaje?`)) return;
+
+    try {
+      await characterAPI.update(character.id, { isArchived: !character.isArchived });
+      loadCharacters();
+    } catch (error) {
+      console.error(`Error archiving character:`, error);
+      alert(`Error al ${action} el personaje`);
     }
   };
 
@@ -130,6 +149,18 @@ export default function CharactersPage() {
                 className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
               />
             </div>
+            <div className="flex items-center h-full pt-6">
+              <input
+                id="includeArchived"
+                type="checkbox"
+                checked={includeArchived}
+                onChange={(e) => setIncludeArchived(e.target.checked)}
+                className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+              />
+              <label htmlFor="includeArchived" className="ml-2 block text-sm text-gray-900">
+                Mostrar Archivados
+              </label>
+            </div>
             <div className="md:col-span-3 flex gap-2">
               <button
                 onClick={handleApplyFilters}
@@ -158,12 +189,19 @@ export default function CharactersPage() {
       ) : (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {characters.map((character) => (
-            <div key={character.id} className="card hover:shadow-lg transition-shadow">
+            <div key={character.id} className={`card hover:shadow-lg transition-shadow ${character.isArchived ? 'opacity-75 bg-gray-50' : ''}`}>
               <div className="flex justify-between items-start mb-4">
                 <div>
-                  <h3 className="text-xl font-bold text-gray-900">
-                    {character.characterName}
-                  </h3>
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-xl font-bold text-gray-900">
+                      {character.characterName}
+                    </h3>
+                    {character.isArchived && (
+                      <span className="px-2 py-0.5 rounded text-xs font-medium bg-gray-200 text-gray-600">
+                        Archivado
+                      </span>
+                    )}
+                  </div>
                   <p className="text-sm text-gray-600">{character.identifierVersion}</p>
                 </div>
                 <span className="bg-primary-100 text-primary-700 px-3 py-1 rounded-full text-sm font-medium">
@@ -178,15 +216,23 @@ export default function CharactersPage() {
               <div className="flex gap-2">
                 <Link
                   href={`/characters/${character.id}`}
-                  className="btn btn-secondary flex-1 text-sm"
+                  className="btn btn-secondary flex-1 text-sm text-center"
                 >
                   Ver Detalles
                 </Link>
                 <button
+                  onClick={() => handleArchive(character)}
+                  className="px-3 py-2 rounded-lg text-sm font-medium text-yellow-600 hover:bg-yellow-50 transition-colors"
+                  title={character.isArchived ? "Desarchivar" : "Archivar"}
+                >
+                  {character.isArchived ? "📂↩️" : "📂"}
+                </button>
+                <button
                   onClick={() => handleDelete(character.id)}
                   className="px-3 py-2 rounded-lg text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
+                  title="Eliminar permanentemente"
                 >
-                  Eliminar
+                  🗑️
                 </button>
               </div>
             </div>

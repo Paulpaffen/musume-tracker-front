@@ -30,6 +30,7 @@ export interface FriendRequest {
 }
 
 export interface Character {
+  isArchived: boolean;
   id: string;
   characterName: string;
   identifierVersion: string;
