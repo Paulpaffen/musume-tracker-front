@@ -107,10 +107,10 @@ export default function SimulatorPage() {
         <div className="max-w-7xl mx-auto space-y-6">
             <div className="flex justify-between items-start">
                 <div>
-                    <h1 className="text-3xl font-bold text-gray-900">
+                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
                         Simulador Global de Rendimiento
                     </h1>
-                    <p className="text-lg text-gray-600 mt-1">
+                    <p className="text-lg text-gray-600 dark:text-gray-300 mt-1">
                         Utiliza Inteligencia Artificial (KNN) para predecir resultados basados en todo tu historial de carreras.
                     </p>
                 </div>
@@ -124,13 +124,13 @@ export default function SimulatorPage() {
 
             {/* Filters */}
             <div className="card">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Filtrar por Tipo de Pista
                 </label>
                 <select
                     value={selectedTrack}
                     onChange={(e) => setSelectedTrack(e.target.value)}
-                    className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm rounded-md"
+                    className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 >
                     <option value="ALL">Todas las Pistas</option>
                     {Object.entries(TRACK_NAMES).map(([key, name]) => (
@@ -139,7 +139,7 @@ export default function SimulatorPage() {
                         </option>
                     ))}
                 </select>
-                <p className="text-sm text-gray-500 mt-2">
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
                     Datos disponibles para simulación: <span className="font-bold">{trainingData.length} carreras</span>
                 </p>
             </div>
@@ -149,14 +149,14 @@ export default function SimulatorPage() {
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
                 </div>
             ) : error ? (
-                <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                    <p className="text-red-800">{error}</p>
+                <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
+                    <p className="text-red-800 dark:text-red-300">{error}</p>
                 </div>
             ) : (
-                <div className="card bg-gradient-to-br from-indigo-50 to-purple-50 border-indigo-100">
+                <div className="card bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-gray-800 dark:to-gray-900 border-indigo-100 dark:border-gray-700">
                     <div className="flex items-center gap-2 mb-6">
                         <span className="text-2xl">🤖</span>
-                        <h2 className="text-xl font-bold text-gray-900">
+                        <h2 className="text-xl font-bold text-gray-900 dark:text-white">
                             Configuración de la Simulación
                         </h2>
                     </div>
@@ -165,8 +165,8 @@ export default function SimulatorPage() {
                         {/* Controls */}
                         <div className="space-y-6">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Skills Raras: <span className="font-bold text-indigo-600">{simRareSkills}</span>
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Skills Raras: <span className="font-bold text-indigo-600 dark:text-indigo-400">{simRareSkills}</span>
                                 </label>
                                 <input
                                     type="range"
@@ -174,12 +174,12 @@ export default function SimulatorPage() {
                                     max="10"
                                     value={simRareSkills}
                                     onChange={(e) => setSimRareSkills(parseInt(e.target.value))}
-                                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-indigo-600"
+                                    className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-indigo-600"
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Skills Normales: <span className="font-bold text-indigo-600">{simNormalSkills}</span>
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Skills Normales: <span className="font-bold text-indigo-600 dark:text-indigo-400">{simNormalSkills}</span>
                                 </label>
                                 <input
                                     type="range"
@@ -187,12 +187,12 @@ export default function SimulatorPage() {
                                     max="20"
                                     value={simNormalSkills}
                                     onChange={(e) => setSimNormalSkills(parseInt(e.target.value))}
-                                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-indigo-600"
+                                    className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-indigo-600"
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Posición Final: <span className="font-bold text-indigo-600">{simPlace}</span>
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Posición Final: <span className="font-bold text-indigo-600 dark:text-indigo-400">{simPlace}</span>
                                 </label>
                                 <input
                                     type="range"
@@ -200,65 +200,65 @@ export default function SimulatorPage() {
                                     max="18"
                                     value={simPlace}
                                     onChange={(e) => setSimPlace(parseInt(e.target.value))}
-                                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-indigo-600"
+                                    className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-indigo-600"
                                 />
                             </div>
 
                             <div className="flex flex-col gap-3">
-                                <label className="flex items-center gap-3 p-3 bg-white rounded-lg border border-gray-200 cursor-pointer hover:bg-gray-50">
+                                <label className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                                     <input
                                         type="checkbox"
                                         checked={simUniqueSkill}
                                         onChange={(e) => setSimUniqueSkill(e.target.checked)}
-                                        className="w-5 h-5 text-indigo-600 rounded focus:ring-indigo-500"
+                                        className="w-5 h-5 text-indigo-600 rounded focus:ring-indigo-500 border-gray-300 dark:border-gray-600 dark:bg-gray-700"
                                     />
-                                    <span className="text-sm font-medium text-gray-700">Skill Única Activada</span>
+                                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Skill Única Activada</span>
                                 </label>
 
-                                <label className="flex items-center gap-3 p-3 bg-white rounded-lg border border-gray-200 cursor-pointer hover:bg-gray-50">
+                                <label className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                                     <input
                                         type="checkbox"
                                         checked={simGoodPositioning}
                                         onChange={(e) => setSimGoodPositioning(e.target.checked)}
-                                        className="w-5 h-5 text-indigo-600 rounded focus:ring-indigo-500"
+                                        className="w-5 h-5 text-indigo-600 rounded focus:ring-indigo-500 border-gray-300 dark:border-gray-600 dark:bg-gray-700"
                                     />
-                                    <span className="text-sm font-medium text-gray-700">Good Positioning</span>
+                                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Good Positioning</span>
                                 </label>
 
-                                <label className="flex items-center gap-3 p-3 bg-white rounded-lg border border-gray-200 cursor-pointer hover:bg-gray-50">
+                                <label className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                                     <input
                                         type="checkbox"
                                         checked={simRushed}
                                         onChange={(e) => setSimRushed(e.target.checked)}
-                                        className="w-5 h-5 text-indigo-600 rounded focus:ring-indigo-500"
+                                        className="w-5 h-5 text-indigo-600 rounded focus:ring-indigo-500 border-gray-300 dark:border-gray-600 dark:bg-gray-700"
                                     />
-                                    <span className="text-sm font-medium text-gray-700">Rushed (Stamina Agotada)</span>
+                                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Rushed (Stamina Agotada)</span>
                                 </label>
                             </div>
                         </div>
 
                         {/* Results */}
-                        <div className="bg-white rounded-xl p-6 shadow-sm border border-indigo-100">
-                            <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wide mb-2">
+                        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-indigo-100 dark:border-gray-700">
+                            <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">
                                 Score Predicho
                             </h3>
                             <div className="flex items-baseline gap-2 mb-6">
-                                <span className="text-4xl font-bold text-indigo-600">
+                                <span className="text-4xl font-bold text-indigo-600 dark:text-indigo-400">
                                     {simPrediction?.score.toLocaleString()}
                                 </span>
-                                <span className="text-sm text-gray-400">pts</span>
+                                <span className="text-sm text-gray-400 dark:text-gray-500">pts</span>
                             </div>
 
-                            <h4 className="text-xs font-semibold text-gray-400 uppercase mb-3">
+                            <h4 className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase mb-3">
                                 Basado en las 5 carreras más similares (Global):
                             </h4>
                             <div className="space-y-2">
                                 {simPrediction?.neighbors.map((n, i) => (
-                                    <div key={i} className="flex justify-between items-center text-sm p-2 bg-gray-50 rounded hover:bg-indigo-50 transition-colors">
-                                        <span className="text-gray-600">
+                                    <div key={i} className="flex justify-between items-center text-sm p-2 bg-gray-50 dark:bg-gray-700/50 rounded hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-colors">
+                                        <span className="text-gray-600 dark:text-gray-300">
                                             #{n.finalPlace} | {n.rareSkills} Raras | {n.normalSkills} Normales
                                         </span>
-                                        <span className="font-bold text-gray-900">{n.score.toLocaleString()}</span>
+                                        <span className="font-bold text-gray-900 dark:text-white">{n.score.toLocaleString()}</span>
                                     </div>
                                 ))}
                             </div>
