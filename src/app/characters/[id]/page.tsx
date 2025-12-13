@@ -248,14 +248,79 @@ export default function CharacterDetailsPage() {
           <p className="text-sm text-gray-400 mt-2">
             Creado: {getCreationDate()}
           </p>
+
+          {/* Character Stats Grid */}
+          <div className="mt-4 grid grid-cols-6 gap-2 text-center max-w-2xl">
+            <div className="bg-gray-100 dark:bg-gray-800 p-2 rounded">
+              <div className="text-xs text-gray-500">Rank</div>
+              <div className="font-bold text-lg">{character.rank || '-'}</div>
+            </div>
+            <div className="bg-blue-50 dark:bg-blue-900/20 p-2 rounded">
+              <div className="text-xs text-blue-600 dark:text-blue-400">Speed</div>
+              <div className="font-bold text-lg">{character.speed || '-'}</div>
+            </div>
+            <div className="bg-pink-50 dark:bg-pink-900/20 p-2 rounded">
+              <div className="text-xs text-pink-600 dark:text-pink-400">Stamina</div>
+              <div className="font-bold text-lg">{character.stamina || '-'}</div>
+            </div>
+            <div className="bg-yellow-50 dark:bg-yellow-900/20 p-2 rounded">
+              <div className="text-xs text-yellow-600 dark:text-yellow-400">Power</div>
+              <div className="font-bold text-lg">{character.power || '-'}</div>
+            </div>
+            <div className="bg-red-50 dark:bg-red-900/20 p-2 rounded">
+              <div className="text-xs text-red-600 dark:text-red-400">Guts</div>
+              <div className="font-bold text-lg">{character.guts || '-'}</div>
+            </div>
+            <div className="bg-green-50 dark:bg-green-900/20 p-2 rounded">
+              <div className="text-xs text-green-600 dark:text-green-400">Wit</div>
+              <div className="font-bold text-lg">{character.wit || '-'}</div>
+            </div>
+          </div>
         </div>
-        <div>
+        <div className="flex flex-col gap-2">
           <button
             onClick={() => router.push(`/characters/${params.id}/edit`)}
             className="rounded-md bg-white px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
           >
             Edit Character
           </button>
+          <button
+            onClick={() => document.getElementById('stats-upload')?.click()}
+            className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 flex items-center justify-center gap-2"
+          >
+            <span>📷</span> Escanear Stats
+          </button>
+          <input
+            id="stats-upload"
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={async (e) => {
+              const file = e.target.files?.[0];
+              if (!file) return;
+
+              const formData = new FormData();
+              formData.append('file', file);
+
+              try {
+                // Show loading state if possible, or just log
+                console.log('Uploading stats image...');
+                const response = await import('@/lib/api').then(m => m.ocrAPI.scanStats(formData));
+                const stats = response.data;
+
+                console.log('Scanned stats:', stats);
+
+                if (window.confirm(`Stats detectados:\nSpeed: ${stats.speed}\nStamina: ${stats.stamina}\nPower: ${stats.power}\nGuts: ${stats.guts}\nWit: ${stats.wit}\nRank: ${stats.rank}\n\n¿Deseas actualizar el personaje?`)) {
+                  await characterAPI.update(params.id as string, stats);
+                  alert('Personaje actualizado correctamente');
+                  loadData(); // Reload data to show new stats
+                }
+              } catch (err) {
+                console.error(err);
+                alert('Error al escanear imagen o actualizar personaje');
+              }
+            }}
+          />
         </div>
       </div>
 

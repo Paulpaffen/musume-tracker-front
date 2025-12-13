@@ -40,6 +40,12 @@ export interface Character {
   _count?: {
     runs: number;
   };
+  speed?: number;
+  stamina?: number;
+  power?: number;
+  guts?: number;
+  wit?: number;
+  rank?: string;
 }
 
 export enum TrackType {
@@ -127,4 +133,10 @@ export interface CharacterTraining {
   userId?: string;
   isArchived: boolean;
   runs?: Run[];
+  speed?: number;
+  stamina?: number;
+  power?: number;
+  guts?: number;
+  wit?: number;
+  rank?: string;
 }

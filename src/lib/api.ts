@@ -89,3 +89,19 @@ export const friendsAPI = {
   accept: (id: string) => api.patch(`/friends/${id}/accept`),
   remove: (id: string) => api.delete(`/friends/${id}`),
 };
+
+// OCR API
+export const ocrAPI = {
+  scan: (formData: FormData) =>
+    api.post('/ocr/scan', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    }),
+  scanStats: (formData: FormData) =>
+    api.post('/ocr/scan-stats', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    }),
+};
