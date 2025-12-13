@@ -42,6 +42,7 @@ interface CharacterStats {
   recentHistory: Array<{
     date: string;
     score: number;
+    finalPlace: number;
     rareSkills: number;
     normalSkills: number;
   }>;
@@ -58,6 +59,7 @@ export default function CharacterDetailsPage() {
   const [error, setError] = useState('');
   const [showScore, setShowScore] = useState(true);
   const [showSkills, setShowSkills] = useState(true);
+  const [showPlace, setShowPlace] = useState(true);
 
   useEffect(() => {
     loadData();
@@ -269,6 +271,15 @@ export default function CharacterDetailsPage() {
                     />
                     Skills (Raras/Normales)
                   </label>
+                  <label className="flex items-center gap-2 text-sm text-gray-600">
+                    <input
+                      type="checkbox"
+                      checked={showPlace}
+                      onChange={(e) => setShowPlace(e.target.checked)}
+                      className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                    />
+                    Posición
+                  </label>
                 </div>
               </div>
               <ResponsiveContainer width="100%" height={300}>
@@ -313,6 +324,17 @@ export default function CharacterDetailsPage() {
                         strokeWidth={2}
                       />
                     </>
+                  )}
+                  {showPlace && (
+                    <Line
+                      yAxisId="right"
+                      type="monotone"
+                      dataKey="finalPlace"
+                      stroke="#ef4444"
+                      name="Posición"
+                      strokeWidth={2}
+                      strokeDasharray="5 5"
+                    />
                   )}
                 </LineChart>
               </ResponsiveContainer>
