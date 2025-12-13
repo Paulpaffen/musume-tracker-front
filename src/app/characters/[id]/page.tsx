@@ -417,7 +417,7 @@ export default function CharacterDetailsPage() {
             }}
           />
 
-          {/* Paste Area */}
+          {/* Paste Area for Stats */}
           <div
             className="border-2 border-dashed border-indigo-300 dark:border-indigo-700 rounded-lg p-4 text-center bg-indigo-50 dark:bg-indigo-900/10"
             onPaste={async (e) => {
@@ -456,10 +456,55 @@ export default function CharacterDetailsPage() {
             tabIndex={0}
           >
             <div className="text-sm text-indigo-600 dark:text-indigo-400 font-medium">
-              📋 Pega aquí tu captura (Ctrl+V)
+              📊 Pega aquí captura de STATS (Ctrl+V)
             </div>
             <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-              Win+Shift+S → Ctrl+V aquí
+              Para escanear Speed, Stamina, Power, Guts, Wit
+            </div>
+          </div>
+
+          {/* Paste Area for Skills */}
+          <div
+            className="border-2 border-dashed border-purple-300 dark:border-purple-700 rounded-lg p-4 text-center bg-purple-50 dark:bg-purple-900/10"
+            onPaste={async (e) => {
+              e.preventDefault();
+              const items = e.clipboardData?.items;
+              if (!items) return;
+
+              for (let i = 0; i < items.length; i++) {
+                if (items[i].type.indexOf('image') !== -1) {
+                  const blob = items[i].getAsFile();
+                  if (!blob) continue;
+
+                  const formData = new FormData();
+                  formData.append('file', blob, 'clipboard-image.png');
+
+                  try {
+                    console.log('Uploading pasted skills image...');
+                    const response = await import('@/lib/api').then(m => m.ocrAPI.scanSkills(formData));
+                    const skillsData = response.data;
+
+                    console.log('Scanned skills:', skillsData);
+
+                    // Open modal with detected skills
+                    setUniqueSkillLevel(skillsData.uniqueSkillLevel || 0);
+                    setEditingSkills(skillsData.skills || []);
+                    setShowSkillsModal(true);
+                  } catch (err) {
+                    console.error(err);
+                    alert('Error al escanear skills');
+                  }
+                  break;
+                }
+              }
+            }}
+            tabIndex={0}
+          >
+            <div className="text-sm text-purple-600 dark:text-purple-400 font-medium">
+              🎯 Pega aquí captura de SKILLS (Ctrl+V)
+            </div>
+            <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              Para escanear habilidades y nivel de skill única
             </div>
           </div>
         </div>
