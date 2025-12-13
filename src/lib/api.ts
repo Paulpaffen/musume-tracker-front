@@ -56,8 +56,8 @@ export const characterAPI = {
 
 // Run API
 export const runAPI = {
-  getAll: (characterTrainingId?: string) =>
-    api.get('/runs', { params: { characterTrainingId } }),
+  getAll: (params?: any) =>
+    api.get('/runs', { params }),
   getOne: (id: string) => api.get(`/runs/${id}`),
   create: (data: any) => api.post('/runs', data),
   update: (id: string, data: any) => api.patch(`/runs/${id}`, data),
