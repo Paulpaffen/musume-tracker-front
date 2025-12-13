@@ -42,7 +42,7 @@ export default function DashboardPage() {
     );
   }
 
-  const { overview, byTrack, byCharacter, recentRuns, bestRuns, recentByTrack, recentBestRuns } = stats;
+  const { overview, byTrack, byCharacter, recentRuns, bestRuns, recentByTrack, recentBestRuns, recentWorstRuns, recentBestAverages } = stats;
 
   return (
     <div className="space-y-8">
@@ -215,12 +215,12 @@ export default function DashboardPage() {
       )}
 
       <div className="grid md:grid-cols-2 gap-6">
-        {/* Recent Runs */}
-        {recentRuns.length > 0 && (
+        {/* Recent Worst Runs */}
+        {recentWorstRuns && recentWorstRuns.length > 0 && (
           <div className="card">
-            <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Últimas Carreras</h2>
+            <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Carreras con Menor Rendimiento (Reciente)</h2>
             <div className="space-y-3">
-              {recentRuns.slice(0, 3).map((run) => (
+              {recentWorstRuns.map((run) => (
                 <div key={run.id} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
                   <div className="flex-1">
                     <p className="font-medium text-gray-900 dark:text-white">
@@ -234,7 +234,7 @@ export default function DashboardPage() {
                     </p>
                   </div>
                   <div className="text-right">
-                    <p className="text-xl font-bold text-primary-600 dark:text-primary-400">{run.score}</p>
+                    <p className="text-xl font-bold text-red-600 dark:text-red-400">{run.score}</p>
                     <p className="text-xs text-gray-500 dark:text-gray-400">{format(new Date(run.date), 'dd/MM')}</p>
                   </div>
                 </div>
@@ -264,6 +264,34 @@ export default function DashboardPage() {
                   <div className="text-right">
                     <p className="text-xl font-bold text-primary-600 dark:text-primary-400">{run.score}</p>
                     <p className="text-xs text-gray-500 dark:text-gray-400">{format(new Date(run.date), 'dd/MM')}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Recent Best Averages */}
+        {recentBestAverages && recentBestAverages.length > 0 && (
+          <div className="card">
+            <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Mejores Promedios Recientes</h2>
+            <div className="space-y-3">
+              {recentBestAverages.map((char) => (
+                <div key={char.characterId} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                  <div className="flex-1">
+                    <p className="font-medium text-gray-900 dark:text-white">
+                      {char.characterName}
+                    </p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                      {char.identifierVersion}
+                    </p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                      {char.totalRuns} carreras
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-xl font-bold text-green-600 dark:text-green-400">{char.averageScore}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">Promedio</p>
                   </div>
                 </div>
               ))}

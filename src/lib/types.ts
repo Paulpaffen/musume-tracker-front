@@ -107,6 +107,14 @@ export interface DashboardStats {
     totalRuns: number;
   }>;
   recentBestRuns: Run[];
+  recentWorstRuns: Run[];
+  recentBestAverages: Array<{
+    characterId: string;
+    characterName: string;
+    identifierVersion: string;
+    averageScore: number;
+    totalRuns: number;
+  }>;
 }
 
 export interface CharacterTraining {
