@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { characterAPI, statsAPI } from '@/lib/api';
+import { characterAPI, statsAPI, skillsAPI } from '@/lib/api';
 import { CharacterTraining } from '@/lib/types';
 import {
   BarChart,
@@ -87,12 +87,35 @@ export default function CharacterDetailsPage() {
   const [showSkillsModal, setShowSkillsModal] = useState(false);
   const [editingSkills, setEditingSkills] = useState<Array<{ name: string; isRare: boolean }>>([]);
   const [uniqueSkillLevel, setUniqueSkillLevel] = useState(0);
+  const [skillInput, setSkillInput] = useState<{ [key: number]: string }>({});
+  const [skillSuggestions, setSkillSuggestions] = useState<{ [key: number]: Array<{ id: string; name: string; isRare: boolean }> }>({});
+  const [showSuggestions, setShowSuggestions] = useState<{ [key: number]: boolean }>({});
 
   // Simulator State
   const [simRareSkills, setSimRareSkills] = useState(2);
   const [simNormalSkills, setSimNormalSkills] = useState(4);
   const [simPlace, setSimPlace] = useState(1);
   const [simPrediction, setSimPrediction] = useState<{ score: number; neighbors: any[] } | null>(null);
+
+  // Debounced search for skills autocomplete
+  const searchSkills = useCallback(
+    async (query: string, index: number) => {
+      if (query.trim().length < 2) {
+        setSkillSuggestions(prev => ({ ...prev, [index]: [] }));
+        setShowSuggestions(prev => ({ ...prev, [index]: false }));
+        return;
+      }
+
+      try {
+        const response = await skillsAPI.search(query, 5);
+        setSkillSuggestions(prev => ({ ...prev, [index]: response.data }));
+        setShowSuggestions(prev => ({ ...prev, [index]: true }));
+      } catch (err) {
+        console.error('Error searching skills:', err);
+      }
+    },
+    []
+  );
 
   useEffect(() => {
     if (stats?.trainingData && stats.trainingData.length > 0) {
@@ -1051,18 +1074,72 @@ export default function CharacterDetailsPage() {
                 ) : (
                   <div className="space-y-2 max-h-96 overflow-y-auto">
                     {editingSkills.map((skill, index) => (
-                      <div key={index} className="flex gap-2 items-center bg-gray-50 dark:bg-gray-700 p-3 rounded">
-                        <input
-                          type="text"
-                          value={skill.name}
-                          onChange={(e) => {
-                            const newSkills = [...editingSkills];
-                            newSkills[index].name = e.target.value;
-                            setEditingSkills(newSkills);
-                          }}
-                          placeholder="Nombre de skill"
-                          className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
-                        />
+                      <div key={index} className="relative flex gap-2 items-center bg-gray-50 dark:bg-gray-700 p-3 rounded">
+                        <div className="flex-1 relative">
+                          <input
+                            type="text"
+                            value={skillInput[index] !== undefined ? skillInput[index] : skill.name}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              setSkillInput(prev => ({ ...prev, [index]: value }));
+                              
+                              const newSkills = [...editingSkills];
+                              newSkills[index].name = value;
+                              setEditingSkills(newSkills);
+
+                              // Search for suggestions
+                              searchSkills(value, index);
+                            }}
+                            onFocus={() => {
+                              if (skillInput[index]?.trim().length >= 2) {
+                                setShowSuggestions(prev => ({ ...prev, [index]: true }));
+                              }
+                            }}
+                            onBlur={() => {
+                              // Delay to allow clicking on suggestion
+                              setTimeout(() => {
+                                setShowSuggestions(prev => ({ ...prev, [index]: false }));
+                              }, 200);
+                            }}
+                            placeholder="Nombre de skill (escribe al menos 2 letras)"
+                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                          />
+                          
+                          {/* Autocomplete Dropdown */}
+                          {showSuggestions[index] && skillSuggestions[index]?.length > 0 && (
+                            <div className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg max-h-48 overflow-y-auto">
+                              {skillSuggestions[index].map((suggestion) => (
+                                <button
+                                  key={suggestion.id}
+                                  type="button"
+                                  onMouseDown={(e) => {
+                                    e.preventDefault();
+                                    const newSkills = [...editingSkills];
+                                    newSkills[index] = {
+                                      name: suggestion.name,
+                                      isRare: suggestion.isRare,
+                                    };
+                                    setEditingSkills(newSkills);
+                                    setSkillInput(prev => ({ ...prev, [index]: suggestion.name }));
+                                    setShowSuggestions(prev => ({ ...prev, [index]: false }));
+                                  }}
+                                  className="w-full text-left px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 flex items-center justify-between group"
+                                >
+                                  <span className="text-gray-900 dark:text-white">
+                                    {suggestion.name}
+                                  </span>
+                                  <span className={`text-xs px-2 py-1 rounded ${
+                                    suggestion.isRare
+                                      ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
+                                      : 'bg-gray-200 text-gray-700 dark:bg-gray-600 dark:text-gray-300'
+                                  }`}>
+                                    {suggestion.isRare ? '⭐ Rara' : '○ Normal'}
+                                  </span>
+                                </button>
+                              ))}
+                            </div>
+                          )}
+                        </div>
                         <button
                           onClick={() => {
                             const newSkills = [...editingSkills];
