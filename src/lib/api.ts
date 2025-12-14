@@ -111,3 +111,15 @@ export const ocrAPI = {
       },
     }),
 };
+
+// Skills API
+export const skillsAPI = {
+  getAll: (search?: string) => api.get('/skills', { params: { search } }),
+  getOne: (id: string) => api.get(`/skills/${id}`),
+  create: (data: { name: string; isRare?: boolean }) => api.post('/skills', data),
+  update: (id: string, data: { name?: string; isRare?: boolean }) => api.patch(`/skills/${id}`, data),
+  delete: (id: string) => api.delete(`/skills/${id}`),
+  search: (query: string, limit?: number) => api.get('/skills/search', { params: { q: query, limit } }),
+  seed: () => api.post('/skills/seed'),
+};
+
